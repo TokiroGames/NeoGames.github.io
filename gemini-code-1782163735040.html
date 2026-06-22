@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeoGames — Juegos & Consolas Retro</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  /* Ajuste de luminancia y saturación para maximizar el contraste relativo */
+  --bg: #020205; 
+  --surface: #0a0a14;
+  --card: #0d0d1c;
+  --border: #1e1e3f;
+  --border2: #2a2a5a;
+  --accent: #fffb00; 
+  --accent2: #00ffff; 
+  --accent3: #ff007f; 
+  --accent4: #b700ff; 
+  --green: #00ff00; 
+  --orange: #ff6600; 
+  --muted: #5a5a8f;
+  --text: #e0e0ff;
+  --white: #ffffff;
+  --pixel: "Press Start 2P", monospace;
+  --mono: "Share Tech Mono", monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.7;overflow-x:hidden;}
+
+/* SCANLINES */
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--accent4);}
+
+/* ANIMATIONS */
+@keyframes glitch{
+  0%,100%{clip-path:inset(0 0 98% 0);transform:translate(-2px,0);}
+  20%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0);}
+  40%{clip-path:inset(60% 0 20% 0);transform:translate(-1px,0);}
+  60%{clip-path:inset(80% 0 5% 0);transform:translate(3px,0);}
+  80%{clip-path:inset(10% 0 80% 0);transform:translate(-3px,0);}
+}
+@keyframes glitch2{
+  0%,100%{clip-path:inset(0 0 98% 0);transform:translate(2px,0);}
+  20%{clip-path:inset(50% 0 30% 0);transform:translate(-2px,0);}
+  40%{clip-path:inset(20% 0 60% 0);transform:translate(1px,0);}
+  60%{clip-path:inset(5% 0 80% 0);transform:translate(-3px,0);}
+  80%{clip-path:inset(80% 0 10% 0);transform:translate(3px,0);}
+}
+@keyframes pulse-glow{0%,100%{opacity:.7;} 50%{opacity:1;}}
+@keyframes float{0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+@keyframes slideInRight{from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;}}
+@keyframes bounce-in{0%{transform:scale(0.3);opacity:0;} 60%{transform:scale(1.1);} 100%{transform:scale(1);opacity:1;}}
+@keyframes blink{0%,100%{opacity:1;} 50%{opacity:0;}}
+@keyframes neon-pulse{0%,100%{text-shadow:0 0 4px currentColor,0 0 10px currentColor;} 50%{text-shadow:0 0 8px currentColor,0 0 20px currentColor,0 0 40px currentColor;}}
+
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(2,2,5,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:60px;
+}
+.logo{
+  font-family:var(--pixel);font-size:14px;
+  color:var(--accent);letter-spacing:2px;text-decoration:none;
+  position:relative;
+  text-shadow:0 0 8px rgba(255,251,0,0.6),0 0 20px rgba(255,251,0,0.3);
+  animation:neon-pulse 3s ease-in-out infinite;
+}
+.logo::before,.logo::after{
+  content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;
+}
+.logo::before{color:var(--accent3);animation:glitch 4s infinite;left:2px;}
+.logo::after{color:var(--accent2);animation:glitch2 4s infinite;left:-2px;}
+.logo b{color:var(--accent2);}
+
+.nav-links{display:flex;gap:1.5rem;align-items:center;}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:10px;letter-spacing:2px;
+  padding:4px 0;border-bottom:1px solid transparent;
+  transition:color .2s,border-color .2s;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--accent);border-color:var(--accent);}
+.nav-actions{display:flex;gap:8px;align-items:center;}
+.btn-nav{
+  background:transparent;border:1px solid var(--border2);color:var(--text);
+  padding:6px 14px;font-family:var(--pixel);font-size:8px;cursor:pointer;
+  letter-spacing:1px;transition:all .2s;position:relative;overflow:hidden;
+}
+.btn-nav::before{content:'';position:absolute;inset:0;background:var(--accent);
+  transform:translateX(-100%);transition:transform .25s;z-index:0;}
+.btn-nav span{position:relative;z-index:1;}
+.btn-nav:hover{color:var(--bg);border-color:var(--accent);}
+.btn-nav:hover::before{transform:translateX(0);}
+.cart-badge{
+  background:var(--accent);color:var(--bg);
+  font-family:var(--pixel);font-size:8px;
+  width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;
+  margin-left:4px;transition:transform .2s;
+}
+.cart-badge.bump{animation:bounce-in .4s ease;}
+
+/* PLATFORM SLIDER NAV */
+.platform-nav-wrap{
+  position:sticky;top:60px;z-index:190;
+  background:rgba(2,2,5,0.97);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.platform-nav{
+  display:flex;gap:0;overflow-x:auto;
+  scrollbar-width:none;-ms-overflow-style:none;
+  scroll-behavior:smooth;
+  padding:0;
+}
+.platform-nav::-webkit-scrollbar{display:none;}
+.platform-tab{
+  flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 22px;
+  border-right:1px solid var(--border);
+  cursor:pointer;
+  position:relative;
+  transition:background .2s;
+  text-decoration:none;
+  color:var(--muted);
+  background:transparent;
+  border-bottom:none;
+  border-top:none;
+  border-left:none;
+  font-family:var(--mono);
+  min-width:110px;
+}
+.platform-tab::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--accent);transform:scaleX(0);transition:transform .25s;
+}
+.platform-tab:hover,.platform-tab.active{background:rgba(255,251,0,0.05);}
+.platform-tab:hover::after,.platform-tab.active::after{transform:scaleX(1);}
+.platform-tab.active .ptab-name{color:var(--accent);}
+.platform-tab.active .ptab-icon{filter:drop-shadow(0 0 6px currentColor);}
+.ptab-icon{display:flex;align-items:center;justify-content:center;transition:transform .2s,filter .2s;}
+.platform-tab:hover .ptab-icon{transform:scale(1.2);}
+.ptab-name{font-family:var(--pixel);font-size:8px;letter-spacing:1px;color:var(--text);transition:color .2s;}
+.ptab-count{font-size:9px;color:var(--muted);}
+.platform-nav-arrow{
+  position:absolute;top:0;bottom:0;width:40px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(90deg,rgba(2,2,5,.95),transparent);
+  cursor:pointer;z-index:2;border:none;color:var(--accent);font-size:18px;
+  transition:opacity .2s;
+}
+.platform-nav-arrow.right{right:0;background:linear-gradient(270deg,rgba(2,2,5,.95),transparent);}
+
+/* PAGES */
+.page{display:none;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+
+/* HERO */
+.hero{
+  max-width:1200px;margin:0 auto;
+  padding:5rem 2rem 4rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+}
+.hero-eyebrow{
+  font-size:9px;letter-spacing:4px;color:var(--accent2);margin-bottom:1.5rem;
+  text-transform:uppercase;
+}
+.hero-eyebrow::before{content:'▶ ';color:var(--accent);animation:blink 1.2s step-end infinite;}
+.hero-title{
+  font-family:var(--pixel);
+  font-size:clamp(16px,2.5vw,26px);
+  color:var(--white);line-height:2;margin-bottom:1rem;
+}
+.hero-title .hl1{color:var(--accent);text-shadow:0 0 20px rgba(255,251,0,.5);}
+.hero-title .hl2{color:var(--accent3);text-shadow:0 0 20px rgba(255,0,127,.5);}
+.hero-sub{color:var(--muted);font-size:12px;margin-bottom:2.5rem;max-width:380px;line-height:1.9;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-primary{
+  background:var(--accent);color:var(--bg);border:none;
+  padding:13px 26px;font-family:var(--pixel);font-size:9px;
+  cursor:pointer;letter-spacing:1px;text-decoration:none;display:inline-block;
+  position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 0 0 rgba(255,251,0,0);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,251,0,.4);}
+.btn-primary:active{transform:scale(.97);}
+.btn-ghost{
+  background:transparent;color:var(--text);border:1px solid var(--border2);
+  padding:12px 26px;font-family:var(--pixel);font-size:9px;
+  cursor:pointer;letter-spacing:1px;text-decoration:none;display:inline-block;
+  transition:all .2s;
+}
+.btn-ghost:hover{border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 16px rgba(0,255,255,.2);}
+
+/* HERO ART */
+.hero-art{display:flex;justify-content:center;align-items:center;position:relative;}
+.hero-art svg{animation:float 4s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(0,255,255,.3));}
+
+/* STATS */
+.stats-bar{
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--surface);
+  display:flex;justify-content:center;gap:0;flex-wrap:wrap;
+}
+.stat{
+  padding:1.5rem 2.5rem;text-align:center;
+  border-right:1px solid var(--border);
+  flex:1;min-width:120px;
+}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:var(--pixel);font-size:20px;display:block;margin-bottom:4px;}
+.stat-n.c1{color:var(--accent);}
+.stat-n.c2{color:var(--accent2);}
+.stat-n.c3{color:var(--accent3);}
+.stat-n.c4{color:var(--green);}
+.stat-l{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+
+/* SECTION */
+.section{max-width:1200px;margin:0 auto;padding:3.5rem 2rem;}
+.section-hd{
+  display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;
+  padding-bottom:1rem;border-bottom:1px solid var(--border);
+}
+.section-ttl{font-family:var(--pixel);font-size:12px;color:var(--white);letter-spacing:1px;}
+.section-ttl::before{content:'// ';color:var(--accent);}
+.section-sub{font-size:10px;color:var(--muted);}
+
+/* SEARCH BAR */
+.search-wrap{
+  display:flex;gap:0;border:1px solid var(--border2);margin-bottom:2rem;
+  transition:border-color .2s;
+}
+.search-wrap:focus-within{border-color:var(--accent);}
+.search-input{
+  flex:1;background:var(--surface);border:none;padding:12px 18px;
+  color:var(--white);font-family:var(--mono);font-size:13px;outline:none;
+}
+.search-input::placeholder{color:var(--muted);}
+.search-btn{
+  background:var(--accent);border:none;color:var(--bg);
+  padding:12px 20px;font-family:var(--pixel);font-size:10px;
+  cursor:pointer;letter-spacing:1px;transition:opacity .15s;
+  white-space:nowrap;
+}
+.search-btn:hover{opacity:.85;}
+
+/* ALPHA BAR */
+.alpha-bar{
+  display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2rem;
+}
+.alpha-btn{
+  background:transparent;border:1px solid var(--border);color:var(--muted);
+  width:32px;height:32px;font-family:var(--pixel);font-size:8px;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;
+}
+.alpha-btn:hover,.alpha-btn.active{
+  background:var(--accent4);border-color:var(--accent4);color:var(--white);
+  box-shadow:0 0 10px rgba(183,0,255,.5);
+}
+
+/* FILTER CHIPS */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;}
+.chip{
+  background:transparent;border:1px solid var(--border);color:var(--muted);
+  padding:5px 14px;font-family:var(--mono);font-size:11px;
+  cursor:pointer;letter-spacing:1px;transition:all .18s;border-radius:0;
+}
+.chip:hover,.chip.active{
+  border-color:var(--accent);color:var(--accent);
+  background:rgba(255,251,0,.07);
+}
+
+/* PRODUCT GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border);
+}
+
+/* CINEMATIC CARDS */
+.card, .console-card {
+  background: var(--card);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  /* Curva tensorial para animaciones más fluidas */
+  transition: background 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.3s ease;
+  border: 1px solid transparent;
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(255,251,0,.04));
+  opacity:0;transition:opacity .2s;
+}
+.card:hover, .console-card:hover {
+  background: var(--surface);
+  transform: translateY(-6px) scale(1.02);
+  border-color: var(--accent2);
+  box-shadow: 0 15px 30px rgba(0, 255, 255, 0.15), 0 0 15px rgba(0, 255, 255, 0.1) inset;
+}
+.card:hover::before{opacity:1;}
+.card:hover .card-img-wrap{border-color:var(--accent);box-shadow:0 0 20px rgba(255,251,0,.2);}
+.card-enter{animation:fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;}
+
+.card-img-wrap{
+  aspect-ratio:1;background:var(--surface);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  position:relative;transition:border-color .2s,box-shadow .2s;
+}
+.card-img{width:85%;height:85%;object-fit:contain;transition:transform .3s;display:flex;align-items:center;justify-content:center;}
+.card-img svg{width:100%;height:100%;}
+.card-platform-badge{
+  position:absolute;top:8px;left:8px;
+  background:rgba(2,2,5,.9);border:1px solid var(--border2);
+  font-family:var(--pixel);font-size:7px;padding:3px 6px;color:var(--accent2);
+}
+.card-badge-sale{
+  position:absolute;top:8px;right:8px;
+  background:var(--accent3);color:var(--white);
+  font-family:var(--pixel);font-size:7px;padding:3px 6px;
+}
+.card-badge-new{
+  position:absolute;top:8px;right:8px;
+  background:var(--green);color:var(--bg);
+  font-family:var(--pixel);font-size:7px;padding:3px 6px;
+}
+.card-meta{display:flex;justify-content:space-between;align-items:center;}
+.card-year{font-size:10px;color:var(--muted);}
+.card-stars{font-size:10px;color:var(--accent);}
+.card-name{font-family:var(--pixel);font-size:9px;color:var(--white);line-height:1.9;}
+.card-genre{font-size:11px;color:var(--muted);}
+.card-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:auto;padding-top:.75rem;border-top:1px solid var(--border);
+}
+.card-price{font-family:var(--pixel);font-size:13px;color:var(--accent);}
+.card-price-old{font-size:10px;color:var(--muted);text-decoration:line-through;margin-left:6px;}
+.add-btn{
+  background:transparent;border:1px solid var(--border2);color:var(--text);
+  width:34px;height:34px;font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.add-btn::after{
+  content:'';position:absolute;
+  width:100%;height:100%;top:0;left:0;
+  background:var(--accent);border-radius:50%;
+  transform:scale(0);opacity:.6;transition:transform .3s,opacity .3s;
+}
+.add-btn:hover{border-color:var(--accent);color:var(--bg);background:var(--accent);}
+.add-btn:active::after{transform:scale(2);opacity:0;}
+
+/* FEATURED */
+.featured{
+  display:grid;grid-template-columns:1fr 1fr;
+  border:1px solid var(--border);overflow:hidden;margin-bottom:3rem;
+  background:var(--surface);
+  transition:box-shadow .3s;
+}
+.featured:hover{box-shadow:0 0 40px rgba(183,0,255,.15);}
+.featured-content{
+  padding:3rem;display:flex;flex-direction:column;justify-content:center;gap:1rem;
+  border-right:1px solid var(--border);
+}
+.featured-eyebrow{font-size:8px;letter-spacing:3px;color:var(--accent3);text-transform:uppercase;}
+.featured-title{font-family:var(--pixel);font-size:15px;color:var(--white);line-height:2;}
+.featured-desc{color:var(--muted);font-size:12px;}
+.featured-price{font-family:var(--pixel);font-size:24px;color:var(--accent);}
+.featured-art{
+  background:var(--bg);display:flex;align-items:center;justify-content:center;
+  min-height:280px;padding:2rem;
+}
+.featured-art svg{animation:float 5s ease-in-out infinite;}
+
+/* PLATFORM PAGE */
+.platform-hero{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:4rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+.platform-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(183,0,255,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.platform-hero-img{
+  width:180px;height:180px;margin:0 auto 2rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.platform-hero-img svg{
+  filter:drop-shadow(0 0 30px var(--glow, rgba(0,255,255,.5)));
+  animation:float 4s ease-in-out infinite;
+}
+.platform-hero-title{
+  font-family:var(--pixel);font-size:clamp(18px,4vw,32px);
+  margin-bottom:.75rem;
+}
+.platform-hero-sub{color:var(--muted);font-size:13px;margin-bottom:1.5rem;}
+.platform-hero-stats{
+  display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;
+}
+.pstat{text-align:center;}
+.pstat-n{font-family:var(--pixel);font-size:16px;display:block;margin-bottom:2px;}
+.pstat-l{font-size:9px;color:var(--muted);letter-spacing:2px;}
+
+/* PUBLISH FORM */
+.publish-form{
+  background:var(--surface);border:1px solid var(--border);padding:2.5rem;
+  display:flex;flex-direction:column;gap:1.5rem;
+  animation:fadeInUp .4s ease;
+}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.form-group{display:flex;flex-direction:column;gap:8px;}
+.form-label{font-family:var(--pixel);font-size:8px;color:var(--accent2);letter-spacing:1px;}
+.form-input,.form-select,.form-textarea{
+  background:var(--bg);border:1px solid var(--border2);
+  color:var(--white);padding:10px 14px;font-family:var(--mono);font-size:13px;outline:none;
+  transition:border-color .2s;width:100%;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);}
+.form-select{cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%23fffb00'%3E%3Cpath d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;}
+.form-select option{background:var(--card);}
+.form-textarea{resize:vertical;min-height:100px;}
+.img-upload{
+  border:2px dashed var(--border2);padding:2rem;text-align:center;cursor:pointer;
+  transition:border-color .2s,background .2s;
+}
+.img-upload:hover{border-color:var(--accent4);background:rgba(183,0,255,.05);}
+.img-upload-icon{font-size:32px;color:var(--muted);display:block;margin-bottom:8px;}
+.img-upload-txt{font-size:11px;color:var(--muted);}
+.form-submit{
+  background:var(--accent4);border:none;color:var(--white);
+  padding:14px 32px;font-family:var(--pixel);font-size:10px;
+  cursor:pointer;letter-spacing:1px;transition:all .2s;align-self:flex-start;
+}
+.form-submit:hover{background:var(--accent3);box-shadow:0 0 24px rgba(255,0,127,.4);}
+.tabs{display:flex;gap:0;border:1px solid var(--border);margin-bottom:2rem;}
+.tab{
+  flex:1;text-align:center;padding:12px;
+  font-family:var(--pixel);font-size:9px;color:var(--muted);
+  cursor:pointer;border-right:1px solid var(--border);
+  transition:all .2s;background:transparent;border-top:none;border-bottom:none;border-left:none;
+}
+.tab:last-child{border-right:none;}
+.tab.active,.tab:hover{background:rgba(183,0,255,.1);color:var(--accent4);}
+.tab.active{border-bottom:2px solid var(--accent4) !important;}
+
+/* CONSOLE CARD (Merged with generic card styles above) */
+.console-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transform:scaleX(0);transition:transform .3s;
+}
+.console-card:hover::after{transform:scaleX(1);}
+.console-card-img{
+  aspect-ratio:4/3;background:var(--surface);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.console-card-img svg{width:80%;height:80%;transition:transform .3s;filter:drop-shadow(0 0 8px rgba(0,255,255,.2));}
+.console-card:hover .console-card-img svg{transform:scale(1.05);}
+.console-card-year{font-size:9px;color:var(--muted);}
+.console-card-name{font-family:var(--pixel);font-size:10px;color:var(--white);line-height:1.8;}
+.console-card-brand{font-size:11px;color:var(--accent2);}
+.console-card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:.75rem;border-top:1px solid var(--border);}
+.console-card-price{font-family:var(--pixel);font-size:12px;color:var(--accent);}
+.console-card-cond{font-size:10px;padding:2px 8px;border:1px solid;}
+.cond-mint{color:var(--green);border-color:var(--green);}
+.cond-good{color:var(--orange);border-color:var(--orange);}
+
+/* CART DRAWER */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.drawer{
+  position:fixed;top:0;right:0;width:380px;height:100vh;
+  background:var(--surface);border-left:1px solid var(--border);
+  z-index:501;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+.drawer.open{transform:translateX(0);}
+.drawer-head{
+  padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.drawer-title{font-family:var(--pixel);font-size:10px;color:var(--white);}
+.close-x{background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;transition:color .15s;line-height:1;}
+.close-x:hover{color:var(--accent3);}
+.drawer-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px;}
+.drawer-item{
+  display:flex;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);
+  animation:slideInRight .3s ease;
+}
+.di-thumb{width:54px;height:54px;flex-shrink:0;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.di-thumb svg{width:40px;height:40px;}
+.di-info{flex:1;}
+.di-name{font-family:var(--pixel);font-size:8px;color:var(--white);line-height:1.8;margin-bottom:2px;}
+.di-plat{font-size:10px;color:var(--muted);}
+.di-price{font-family:var(--pixel);font-size:11px;color:var(--accent);}
+.di-rm{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;transition:color .15s;}
+.di-rm:hover{color:var(--accent3);}
+.drawer-empty{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:12px;}
+.drawer-foot{padding:1.25rem 1.5rem;border-top:1px solid var(--border);}
+.drawer-total{display:flex;justify-content:space-between;margin-bottom:1rem;}
+.dt-label{font-size:11px;color:var(--muted);letter-spacing:2px;}
+.dt-amt{font-family:var(--pixel);font-size:16px;color:var(--accent);}
+.checkout-btn{
+  width:100%;background:linear-gradient(90deg,var(--accent4),var(--accent3));
+  border:none;color:var(--white);padding:14px;
+  font-family:var(--pixel);font-size:9px;cursor:pointer;letter-spacing:1px;
+  transition:opacity .15s,box-shadow .2s;
+}
+.checkout-btn:hover{opacity:.9;box-shadow:0 0 24px rgba(183,0,255,.5);}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:2rem;left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:var(--card);border:1px solid var(--accent);
+  color:var(--accent);font-family:var(--pixel);font-size:8px;
+  padding:10px 22px;z-index:600;
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+  white-space:nowrap;letter-spacing:1px;
+  box-shadow:0 0 20px rgba(255,251,0,.3);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* NEWSLETTER */
+.newsletter{
+  background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:4rem 2rem;text-align:center;
+}
+.nl-title{font-family:var(--pixel);font-size:13px;color:var(--white);margin-bottom:1rem;line-height:2;}
+.nl-sub{color:var(--muted);font-size:12px;margin-bottom:2rem;}
+.nl-form{display:flex;max-width:440px;margin:0 auto;border:1px solid var(--border2);}
+.nl-input{flex:1;background:var(--bg);border:none;padding:12px 16px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;}
+.nl-input::placeholder{color:var(--muted);}
+.nl-btn{background:var(--accent3);border:none;color:var(--white);padding:12px 20px;font-family:var(--pixel);font-size:8px;cursor:pointer;letter-spacing:1px;transition:opacity .15s;white-space:nowrap;}
+.nl-btn:hover{opacity:.85;}
+
+/* FOOTER */
+footer{padding:3rem 2rem;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;}
+.ft-brand .logo{font-size:11px;display:inline-block;margin-bottom:1rem;}
+.ft-brand p{font-size:12px;color:var(--muted);max-width:220px;line-height:1.8;}
+.ft-col-title{font-family:var(--pixel);font-size:8px;color:var(--accent4);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.ft-col a{color:var(--muted);text-decoration:none;font-size:12px;transition:color .15s;}
+.ft-col a:hover{color:var(--accent);}
+.ft-bottom{border-top:1px solid var(--border);padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;font-size:10px;color:var(--muted);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;gap:2rem;padding:3rem 1.5rem;}
+  .hero-art{display:none;}
+  .featured{grid-template-columns:1fr;}
+  .featured-art{display:none;}
+  footer{grid-template-columns:1fr 1fr;}
+  .drawer{width:100%;}
+  .form-row{grid-template-columns:1fr;}
+  nav .nav-links a{display:none;}
+  nav .nav-links a.always{display:inline;}
+}
+@media(max-width:480px){
+  footer{grid-template-columns:1fr;}
+  .stats-bar{flex-direction:column;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="#" class="logo" data-text="NEOGAMES" onclick="showPage('home',event)">NEO<b>GAMES</b></a>
+  <nav class="nav-links">
+    <a href="#" class="always active" id="nav-home" onclick="showPage('home',event)">Inicio</a>
+    <a href="#" id="nav-games" onclick="showPage('games',event)">Juegos</a>
+    <a href="#" id="nav-consoles" onclick="showPage('consoles',event)">Consolas</a>
+    <a href="#" id="nav-publish" onclick="showPage('publish',event)">Publicar</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="btn-nav" onclick="showPage('publish',event)"><span>+ PUBLICAR</span></button>
+    <button class="btn-nav" onclick="toggleCart(event)"><span>🎮 CARRITO <span class="cart-badge" id="cart-count">0</span></span></button>
+  </div>
+</header>
+
+<div class="platform-nav-wrap">
+  <button class="platform-nav-arrow" onclick="scrollPlatNav(-200)">‹</button>
+  <div class="platform-nav" id="platform-nav">
+    <button class="platform-tab active" data-plat="todos" onclick="selectPlatform(this,'todos')">
+      <span class="ptab-icon" style="width: 40px; height: 30px;"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" fill="none" stroke="#fffb00" stroke-width="4"/><circle cx="40" cy="40" r="15" fill="#fffb00"/></svg></span>
+      <span class="ptab-name">TODOS</span>
+      <span class="ptab-count">+2400</span>
+    </button>
+    <button class="platform-tab" data-plat="nes" onclick="selectPlatform(this,'nes')">
+      <span class="ptab-icon" id="icon-nes" style="width: 50px; height: 35px;"></span>
+      <span class="ptab-name">NES</span>
+      <span class="ptab-count">318</span>
+    </button>
+    <button class="platform-tab" data-plat="snes" onclick="selectPlatform(this,'snes')">
+      <span class="ptab-icon" id="icon-snes" style="width: 50px; height: 35px;"></span>
+      <span class="ptab-name">SNES</span>
+      <span class="ptab-count">421</span>
+    </button>
+    <button class="platform-tab" data-plat="genesis" onclick="selectPlatform(this,'genesis')">
+      <span class="ptab-icon" id="icon-genesis" style="width: 50px; height: 35px;"></span>
+      <span class="ptab-name">GENESIS</span>
+      <span class="ptab-count">284</span>
+    </button>
+    <button class="platform-tab" data-plat="gameboy" onclick="selectPlatform(this,'gameboy')">
+      <span class="ptab-icon" id="icon-gameboy" style="width: 40px; height: 40px;"></span>
+      <span class="ptab-name">GAME BOY</span>
+      <span class="ptab-count">196</span>
+    </button>
+    <button class="platform-tab" data-plat="n64" onclick="selectPlatform(this,'n64')">
+      <span class="ptab-icon" id="icon-n64" style="width: 50px; height: 40px;"></span>
+      <span class="ptab-name">N64</span>
+      <span class="ptab-count">248</span>
+    </button>
+    <button class="platform-tab" data-plat="ps1" onclick="selectPlatform(this,'ps1')">
+      <span class="ptab-icon" id="icon-ps1" style="width: 50px; height: 35px;"></span>
+      <span class="ptab-name">PS1</span>
+      <span class="ptab-count">312</span>
+    </button>
+    <button class="platform-tab" data-plat="atari" onclick="selectPlatform(this,'atari')">
+      <span class="ptab-icon" id="icon-atari" style="width: 50px; height: 35px;"></span>
+      <span class="ptab-name">ATARI</span>
+      <span class="ptab-count">90</span>
+    </button>
+    <button class="platform-tab" data-plat="arcade" onclick="selectPlatform(this,'arcade')">
+      <span class="ptab-icon" id="icon-arcade" style="width: 50px; height: 35px;"></span>
+      <span class="ptab-name">ARCADE</span>
+      <span class="ptab-count">537</span>
+    </button>
+  </div>
+  <button class="platform-nav-arrow right" onclick="scrollPlatNav(200)">›</button>
+</div>
+
+<div class="page active" id="page-home">
+
+  <section style="border-bottom:1px solid var(--border);">
+    <div class="hero">
+      <div>
+        <p class="hero-eyebrow">nueva colección disponible</p>
+        <h1 class="hero-title">
+          REVIVE LOS<br>
+          <span class="hl1">CLÁSICOS</span><br>
+          QUE FORMARON<br>
+          <span class="hl2">UNA ERA.</span>
+        </h1>
+        <p class="hero-sub">Los mejores juegos y consolas retro. NES, SNES, Sega, Game Boy y más. Originales, en perfecto estado. Envío a toda Argentina.</p>
+        <div class="hero-btns">
+          <a href="#" class="btn-primary" onclick="showPage('games',event)">VER JUEGOS ▶</a>
+          <a href="#" class="btn-ghost" onclick="showPage('consoles',event)">CONSOLAS</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <svg width="220" height="280" viewBox="0 0 220 280" fill="none">
+          <rect x="20" y="30" width="180" height="220" rx="18" fill="#13131a" stroke="#2a2a5a" stroke-width="1.5"/>
+          <rect x="40" y="55" width="140" height="110" rx="4" fill="#0a0a0f" stroke="#2a2a5a"/>
+          <rect x="48" y="63" width="124" height="94" rx="2" fill="#001a10"/>
+          <g fill="#00ffff" opacity="0.9">
+            <rect x="96" y="84" width="6" height="6"/><rect x="118" y="84" width="6" height="6"/>
+            <rect x="90" y="90" width="6" height="6"/><rect x="96" y="90" width="6" height="6"/>
+            <rect x="102" y="90" width="6" height="6"/><rect x="108" y="90" width="6" height="6"/>
+            <rect x="114" y="90" width="6" height="6"/><rect x="120" y="90" width="6" height="6"/>
+            <rect x="84" y="96" width="6" height="6"/><rect x="90" y="96" width="6" height="6"/>
+            <rect x="96" y="96" width="6" height="6"/><rect x="102" y="96" width="6" height="6"/>
+            <rect x="108" y="96" width="6" height="6"/><rect x="114" y="96" width="6" height="6"/>
+            <rect x="120" y="96" width="6" height="6"/><rect x="126" y="96" width="6" height="6"/>
+            <rect x="84" y="102" width="6" height="6"/><rect x="102" y="102" width="6" height="6"/>
+            <rect x="108" y="102" width="6" height="6"/><rect x="126" y="102" width="6" height="6"/>
+            <rect x="84" y="108" width="6" height="6"/><rect x="90" y="108" width="6" height="6"/>
+            <rect x="120" y="108" width="6" height="6"/><rect x="126" y="108" width="6" height="6"/>
+          </g>
+          <text x="56" y="80" fill="#00ffff" font-family="monospace" font-size="7" opacity="0.6">SCORE: 1980</text>
+          <rect x="109" y="120" width="2" height="12" fill="#fffb00" opacity="0.9"/>
+          <rect x="100" y="134" width="20" height="6" fill="#fffb00" rx="1"/>
+          <rect x="107" y="130" width="6" height="4" fill="#fffb00" rx="1"/>
+          <rect x="44" y="182" width="12" height="36" rx="2" fill="#0d0d18" stroke="#2a2a5a"/>
+          <rect x="32" y="194" width="36" height="12" rx="2" fill="#0d0d18" stroke="#2a2a5a"/>
+          <circle cx="154" cy="186" r="8" fill="#1a1a26" stroke="#2a2a5a"/>
+          <circle cx="172" cy="200" r="8" fill="#1a1a26" stroke="#2a2a5a"/>
+          <circle cx="136" cy="200" r="8" fill="#1a1a26" stroke="#2a2a5a"/>
+          <circle cx="154" cy="214" r="8" fill="#1a1a26" stroke="#2a2a5a"/>
+          <text x="151" y="190" fill="#fffb00" font-size="9" font-family="monospace">▲</text>
+          <text x="169" y="204" fill="#00ffff" font-size="9" font-family="monospace">▶</text>
+          <text x="133" y="204" fill="#ff007f" font-size="9" font-family="monospace">◀</text>
+          <text x="151" y="218" fill="#00ff00" font-size="9" font-family="monospace">▼</text>
+          <rect x="90" y="198" width="16" height="5" rx="2" fill="#1a1a26" stroke="#2a2a5a"/>
+          <rect x="114" y="198" width="16" height="5" rx="2" fill="#1a1a26" stroke="#2a2a5a"/>
+          <circle cx="28" cy="180" r="1.5" fill="#2a2a5a"/><circle cx="28" cy="188" r="1.5" fill="#2a2a5a"/>
+          <circle cx="28" cy="196" r="1.5" fill="#2a2a5a"/><circle cx="28" cy="204" r="1.5" fill="#2a2a5a"/>
+          <circle cx="192" cy="180" r="1.5" fill="#2a2a5a"/><circle cx="192" cy="188" r="1.5" fill="#2a2a5a"/>
+          <circle cx="192" cy="196" r="1.5" fill="#2a2a5a"/><circle cx="192" cy="204" r="1.5" fill="#2a2a5a"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-n c1">+2.400</span><span class="stat-l">juegos</span></div>
+    <div class="stat"><span class="stat-n c2">120</span><span class="stat-l">consolas</span></div>
+    <div class="stat"><span class="stat-n c3">24hs</span><span class="stat-l">envío express</span></div>
+    <div class="stat"><span class="stat-n c4">★ 4.9</span><span class="stat-l">calificación</span></div>
+  </div>
+
+  <div class="section">
+    <div class="featured">
+      <div class="featured-content">
+        <p class="featured-eyebrow">★ juego destacado de la semana</p>
+        <h2 class="featured-title">THE LEGEND<br>OF ZELDA:<br>A LINK TO<br>THE PAST</h2>
+        <p class="featured-desc">Cartucho SNES original con caja y manual. Estado impecable, sin rayones.</p>
+        <div style="display:flex;align-items:baseline;gap:1rem;">
+          <span class="featured-price">$24.999</span>
+          <span style="font-size:12px;color:var(--muted);text-decoration:line-through;">$31.999</span>
+        </div>
+        <div>
+          <button class="btn-primary" onclick="addToCartDirect('Zelda: A Link to the Past','SNES','24999','snes')">AGREGAR AL CARRITO</button>
+        </div>
+      </div>
+      <div class="featured-art">
+        <svg width="160" height="200" viewBox="0 0 160 200">
+          <rect x="10" y="5" width="140" height="180" rx="4" fill="#1a1a26" stroke="#b700ff" stroke-width="1.5"/>
+          <rect x="10" y="5" width="140" height="115" rx="4" fill="#0f2a18" stroke="#b700ff" stroke-width="1.5"/>
+          <rect x="22" y="16" width="116" height="90" rx="2" fill="#071a0e"/>
+          <g fill="#fffb00" opacity="0.9">
+            <rect x="74" y="32" width="6" height="6"/><rect x="80" y="32" width="6" height="6"/>
+            <rect x="68" y="38" width="6" height="6"/><rect x="74" y="38" width="6" height="6"/><rect x="80" y="38" width="6" height="6"/><rect x="86" y="38" width="6" height="6"/>
+            <rect x="62" y="44" width="6" height="6"/><rect x="68" y="44" width="6" height="6"/><rect x="80" y="44" width="12" height="6"/>
+            <rect x="62" y="50" width="12" height="6"/><rect x="80" y="50" width="12" height="6"/>
+            <rect x="56" y="56" width="12" height="6"/><rect x="74" y="56" width="6" height="6"/><rect x="92" y="56" width="12" height="6"/>
+            <rect x="56" y="62" width="48" height="6"/>
+          </g>
+          <text x="80" y="90" fill="#fffb00" font-family="monospace" font-size="7" text-anchor="middle" opacity="0.8">ZELDA</text>
+          <text x="80" y="100" fill="#aaffcc" font-family="monospace" font-size="5" text-anchor="middle" opacity="0.6">A LINK TO THE PAST</text>
+          <g fill="#0a0a0f" stroke="#2a2a5a" stroke-width="0.5">
+            <rect x="22" y="165" width="8" height="16" rx="1"/>
+            <rect x="34" y="165" width="8" height="16" rx="1"/>
+            <rect x="46" y="165" width="8" height="16" rx="1"/>
+            <rect x="58" y="165" width="8" height="16" rx="1"/>
+            <rect x="70" y="165" width="8" height="16" rx="1"/>
+            <rect x="82" y="165" width="8" height="16" rx="1"/>
+            <rect x="94" y="165" width="8" height="16" rx="1"/>
+            <rect x="106" y="165" width="8" height="16" rx="1"/>
+            <rect x="118" y="165" width="8" height="16" rx="1"/>
+            <rect x="130" y="165" width="8" height="16" rx="1"/>
+          </g>
+          <text x="80" y="152" fill="#444466" font-family="monospace" font-size="7" text-anchor="middle">SUPER NINTENDO</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="section-hd">
+      <h2 class="section-ttl">destacados</h2>
+      <span class="section-sub">— los más vendidos esta semana</span>
+      <a href="#" onclick="showPage('games',event)" style="margin-left:auto;font-size:10px;color:var(--accent2);text-decoration:none;letter-spacing:1px;">VER TODO ›</a>
+    </div>
+    <div class="grid" id="home-grid"></div>
+  </div>
+
+  <div class="newsletter">
+    <h2 class="nl-title">NUEVOS JUEGOS CADA SEMANA</h2>
+    <p class="nl-sub">Suscribite y recibí alertas de nuevas llegadas, ofertas y torneos retro.</p>
+    <div class="nl-form">
+      <input class="nl-input" type="email" placeholder="tu@email.com"/>
+      <button class="nl-btn">SUSCRIBIR ▶</button>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-games">
+  <div id="platform-hero-section"></div>
+  <div class="section">
+    <div class="section-hd">
+      <h2 class="section-ttl" id="games-title">catálogo de juegos</h2>
+    </div>
+
+    <div class="search-wrap">
+      <input class="search-input" id="search-input" type="text" placeholder="Buscar juego..." oninput="onSearch()"/>
+      <button class="search-btn" onclick="onSearch()">BUSCAR</button>
+    </div>
+
+    <div class="alpha-bar" id="alpha-bar"></div>
+
+    <div class="filter-row" id="genre-filters"></div>
+
+    <p style="font-size:10px;color:var(--muted);margin-bottom:1rem;letter-spacing:1px;" id="results-count"></p>
+
+    <div class="grid" id="games-grid"></div>
+  </div>
+</div>
+
+<div class="page" id="page-consoles">
+  <div class="section">
+    <div class="section-hd">
+      <h2 class="section-ttl">catálogo de consolas</h2>
+      <span class="section-sub">— hardware original y en buen estado</span>
+    </div>
+    <div class="search-wrap">
+      <input class="search-input" id="console-search" type="text" placeholder="Buscar consola..." oninput="onConsoleSearch()"/>
+      <button class="search-btn" onclick="onConsoleSearch()">BUSCAR</button>
+    </div>
+    <div class="filter-row" id="console-brand-filters"></div>
+    <div class="grid" id="consoles-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);"></div>
+  </div>
+</div>
+
+<div class="page" id="page-publish">
+  <div class="section">
+    <div class="section-hd">
+      <h2 class="section-ttl">publicar artículo</h2>
+      <span class="section-sub">— vendé tus juegos y consolas retro</span>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchPublishTab(this,'game')">🎮 JUEGO</button>
+      <button class="tab" onclick="switchPublishTab(this,'console')">🖥 CONSOLA</button>
+    </div>
+    <div class="publish-form" id="publish-form"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleCart(event)"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span class="drawer-title">// CARRITO DE COMPRAS</span>
+    <button class="close-x" onclick="toggleCart(event)">×</button>
+  </div>
+  <div class="drawer-items" id="drawer-items"></div>
+  <div class="drawer-foot">
+    <div class="drawer-total">
+      <span class="dt-label">TOTAL</span>
+      <span class="dt-amt" id="drawer-total">$0</span>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">FINALIZAR COMPRA ▶</button>
+  </div>
+</div>
+
+<footer>
+  <div class="ft-brand">
+    <a href="#" class="logo" data-text="RETROARCH" onclick="showPage('home',event)">RETRO<b>ARCH</b></a>
+    <p>Tu destino para juegos y consolas retro originales. Garantía de autenticidad en cada producto.</p>
+  </div>
+  <div class="ft-col">
+    <p class="ft-col-title">Tienda</p>
+    <ul>
+      <li><a href="#" onclick="showPage('games',event)">Juegos</a></li>
+      <li><a href="#" onclick="showPage('consoles',event)">Consolas</a></li>
+      <li><a href="#">Ofertas</a></li>
+      <li><a href="#" onclick="showPage('publish',event)">Publicar</a></li>
+    </ul>
+  </div>
+  <div class="ft-col">
+    <p class="ft-col-title">Info</p>
+    <ul>
+      <li><a href="#">Sobre nosotros</a></li>
+      <li><a href="#">Envíos</a></li>
+      <li><a href="#">Devoluciones</a></li>
+      <li><a href="#">FAQ</a></li>
+    </ul>
+  </div>
+  <div class="ft-col">
+    <p class="ft-col-title">Contacto</p>
+    <ul>
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">WhatsApp</a></li>
+      <li><a href="#">Discord</a></li>
+      <li><a href="#">hola@retroarch.ar</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="ft-bottom">
+  <span>© 2026 RetroArch. Hecho con ♥ para jugadores retro.</span>
+  <span style="color:var(--accent2);">ARG — ARS</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════ */
+const GAMES = [
+  {id:1,name:'Super Mario Bros. 3',platform:'NES',tag:'nes',year:1988,genre:'Plataformas',price:12999,oldPrice:null,stars:'★★★★★',badge:'CLÁSICO'},
+  {id:2,name:'Sonic the Hedgehog 2',platform:'Sega Genesis',tag:'genesis',year:1992,genre:'Plataformas',price:9999,oldPrice:13999,stars:'★★★★★',badge:'OFERTA'},
+  {id:3,name:'Super Metroid',platform:'SNES',tag:'snes',year:1994,genre:'Acción',price:18999,oldPrice:null,stars:'★★★★★',badge:null},
+  {id:4,name:'Pokémon Red',platform:'Game Boy',tag:'gameboy',year:1996,genre:'RPG',price:14999,oldPrice:19999,stars:'★★★★★',badge:'OFERTA'},
+  {id:5,name:'Mega Man 2',platform:'NES',tag:'nes',year:1988,genre:'Acción',price:10999,oldPrice:null,stars:'★★★★☆',badge:null},
+  {id:6,name:'GoldenEye 007',platform:'N64',tag:'n64',year:1997,genre:'FPS',price:16999,oldPrice:22999,stars:'★★★★★',badge:'OFERTA'},
+  {id:7,name:'Street Fighter II',platform:'SNES',tag:'snes',year:1992,genre:'Pelea',price:13499,oldPrice:null,stars:'★★★★☆',badge:null},
+  {id:8,name:'Tetris',platform:'Game Boy',tag:'gameboy',year:1989,genre:'Puzzle',price:7999,oldPrice:null,stars:'★★★★★',badge:'CLÁSICO'},
+  {id:9,name:'Contra',platform:'NES',tag:'nes',year:1988,genre:'Acción',price:9499,oldPrice:null,stars:'★★★★☆',badge:null},
+  {id:10,name:'Castlevania: Symphony',platform:'PS1',tag:'ps1',year:1997,genre:'Acción/RPG',price:21999,oldPrice:null,stars:'★★★★★',badge:'RARO'},
+  {id:11,name:'Mortal Kombat II',platform:'Sega Genesis',tag:'genesis',year:1993,genre:'Pelea',price:8999,oldPrice:11999,stars:'★★★★☆',badge:'OFERTA'},
+  {id:12,name:'The Legend of Zelda',platform:'NES',tag:'nes',year:1986,genre:'Aventura',price:15999,oldPrice:null,stars:'★★★★★',badge:'CLÁSICO'},
+  {id:13,name:'Super Mario World',platform:'SNES',tag:'snes',year:1990,genre:'Plataformas',price:17499,oldPrice:null,stars:'★★★★★',badge:null},
+  {id:14,name:'Pac-Man',platform:'Arcade',tag:'arcade',year:1980,genre:'Arcade',price:5999,oldPrice:null,stars:'★★★★☆',badge:'CLÁSICO'},
+  {id:15,name:'Mario Kart 64',platform:'N64',tag:'n64',year:1996,genre:'Carreras',price:19999,oldPrice:25999,stars:'★★★★★',badge:'OFERTA'},
+  {id:16,name:'Pokémon Blue',platform:'Game Boy',tag:'gameboy',year:1996,genre:'RPG',price:13999,oldPrice:null,stars:'★★★★★',badge:null},
+];
+
+const CONSOLES = [
+  {id:1,name:'Nintendo NES',brand:'Nintendo',year:1983,price:45999,condition:'Bueno',tag:'nes',desc:'Consola completa con cables y un joystick. Funciona perfectamente.'},
+  {id:2,name:'Super Nintendo',brand:'Nintendo',year:1990,price:69999,condition:'Mint',tag:'snes',desc:'SNES en perfecto estado con 2 controles y cable A/V original.'},
+  {id:3,name:'Sega Genesis Mk.II',brand:'Sega',year:1993,price:52999,condition:'Bueno',tag:'genesis',desc:'Genesis modelo 2 con cable RF y un control original.'},
+  {id:4,name:'Nintendo 64',brand:'Nintendo',year:1996,price:79999,condition:'Mint',tag:'n64',desc:'N64 con expansión pak, 2 controles y cables originales.'},
+  {id:5,name:'Game Boy Original',brand:'Nintendo',year:1989,price:32999,condition:'Bueno',tag:'gameboy',desc:'Game Boy clásico con tapa de batería. Pantalla sin rayaduras.'},
+  {id:6,name:'PlayStation 1',brand:'Sony',year:1994,price:59999,condition:'Bueno',tag:'ps1',desc:'PS1 slim con memory card y 2 controles DualShock.'},
+  {id:7,name:'Game Boy Color',brand:'Nintendo',year:1998,price:38999,condition:'Mint',tag:'gameboy',desc:'GBC color morado transparente. Como nueva, sin uso.'},
+  {id:8,name:'Sega Game Gear',brand:'Sega',year:1990,price:27999,condition:'Bueno',tag:'genesis',desc:'Game Gear revisada, condensadores cambiados. Pantalla nítida.'},
+];
+
+/* ════════════════════════════════════════════
+   SVG CONSOLE IMAGES
+════════════════════════════════════════════ */
+function consoleSVG(tag){
+  const svgs={
+    nes:`<svg viewBox="0 0 180 130" fill="none">
+      <rect x="10" y="30" width="160" height="80" rx="6" fill="#1a1a2e" stroke="#fffb00" stroke-width="1.5"/>
+      <rect x="20" y="42" width="60" height="40" rx="2" fill="#0a0a1a" stroke="#b700ff" stroke-width="1"/>
+      <rect x="110" y="50" width="20" height="20" rx="10" fill="#ff007f" opacity=".8"/>
+      <rect x="136" y="50" width="20" height="20" rx="10" fill="#fffb00" opacity=".8"/>
+      <rect x="22" y="44" width="56" height="36" rx="1" fill="#001a10"/>
+      <g fill="#00ffff" opacity="0.8">
+        <rect x="38" y="52" width="4" height="4"/><rect x="46" y="52" width="4" height="4"/>
+        <rect x="34" y="56" width="4" height="4"/><rect x="38" y="56" width="4" height="4"/>
+        <rect x="42" y="56" width="4" height="4"/><rect x="46" y="56" width="4" height="4"/><rect x="50" y="56" width="4" height="4"/>
+        <rect x="34" y="60" width="4" height="4"/><rect x="42" y="60" width="4" height="4"/><rect x="50" y="60" width="4" height="4"/>
+        <rect x="34" y="64" width="4" height="4"/><rect x="38" y="64" width="4" height="4"/><rect x="50" y="64" width="4" height="4"/><rect x="46" y="64" width="4" height="4"/>
+      </g>
+      <rect x="85" y="55" width="12" height="5" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="101" y="55" width="12" height="5" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="13" y="100" width="154" height="5" rx="2" fill="#0a0a1a" stroke="#1e1e3f"/>
+    </svg>`,
+    snes:`<svg viewBox="0 0 200 140" fill="none">
+      <rect x="10" y="20" width="180" height="100" rx="12" fill="#141428" stroke="#b700ff" stroke-width="1.5"/>
+      <rect x="30" y="35" width="90" height="55" rx="4" fill="#0a0a1a" stroke="#2a2a5a"/>
+      <rect x="34" y="39" width="82" height="47" rx="2" fill="#001a18"/>
+      <text x="75" y="66" fill="#00ffff" font-family="monospace" font-size="8" text-anchor="middle" opacity="0.7">SUPER</text>
+      <text x="75" y="77" fill="#fffb00" font-family="monospace" font-size="7" text-anchor="middle" opacity="0.7">NINTENDO</text>
+      <circle cx="152" cy="50" r="8" fill="#fffb00" opacity=".85"/>
+      <circle cx="168" cy="60" r="8" fill="#00ffff" opacity=".85"/>
+      <circle cx="136" cy="60" r="8" fill="#ff007f" opacity=".85"/>
+      <circle cx="152" cy="70" r="8" fill="#00ff00" opacity=".85"/>
+      <rect x="30" y="102" width="30" height="8" rx="4" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="65" y="102" width="30" height="8" rx="4" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="100" y="104" width="6" height="4" rx="2" fill="#b700ff"/>
+      <rect x="110" y="104" width="6" height="4" rx="2" fill="#ff007f"/>
+    </svg>`,
+    genesis:`<svg viewBox="0 0 200 130" fill="none">
+      <rect x="5" y="25" width="190" height="75" rx="4" fill="#0f0f1e" stroke="#ff007f" stroke-width="1.5"/>
+      <rect x="5" y="85" width="190" height="15" rx="2" fill="#0a0a18" stroke="#1e1e3f"/>
+      <rect x="20" y="38" width="100" height="35" rx="2" fill="#0a0a1a" stroke="#b700ff"/>
+      <rect x="24" y="42" width="92" height="27" rx="1" fill="#000810"/>
+      <text x="70" y="59" fill="#ff007f" font-family="monospace" font-size="10" text-anchor="middle" opacity="0.9" font-weight="bold">SEGA</text>
+      <rect x="140" y="42" width="14" height="14" rx="7" fill="#ff007f" opacity=".8"/>
+      <rect x="160" y="42" width="14" height="14" rx="7" fill="#fffb00" opacity=".8"/>
+      <rect x="140" y="62" width="14" height="6" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="158" y="62" width="14" height="6" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="8" y="87" width="184" height="11" rx="2" fill="#07070f" stroke="#1e1e3f"/>
+      <g fill="#1e1e3f">
+        <rect x="20" y="89" width="6" height="7" rx="1"/><rect x="30" y="89" width="6" height="7" rx="1"/>
+        <rect x="40" y="89" width="6" height="7" rx="1"/><rect x="50" y="89" width="6" height="7" rx="1"/>
+        <rect x="60" y="89" width="6" height="7" rx="1"/>
+      </g>
+    </svg>`,
+    n64:`<svg viewBox="0 0 200 160" fill="none">
+      <path d="M40 40 L100 15 L160 40 L175 120 L100 145 L25 120 Z" fill="#141428" stroke="#fffb00" stroke-width="1.5"/>
+      <circle cx="100" cy="80" r="28" fill="#0a0a1a" stroke="#b700ff" stroke-width="1"/>
+      <circle cx="100" cy="80" r="16" fill="#07070f" stroke="#2a2a5a"/>
+      <circle cx="100" cy="80" r="6" fill="#fffb00" opacity=".7"/>
+      <circle cx="68" cy="58" r="7" fill="#ff007f" opacity=".8"/>
+      <circle cx="132" cy="58" r="7" fill="#fffb00" opacity=".8"/>
+      <circle cx="68" cy="100" r="7" fill="#00ffff" opacity=".8"/>
+      <circle cx="132" cy="100" r="7" fill="#00ff00" opacity=".8"/>
+      <text x="100" y="84" fill="#fffb00" font-family="monospace" font-size="7" text-anchor="middle" opacity="0.6">64</text>
+    </svg>`,
+    gameboy:`<svg viewBox="0 0 120 180" fill="none">
+      <rect x="20" y="10" width="80" height="160" rx="12" fill="#1a1a2e" stroke="#00ffff" stroke-width="1.5"/>
+      <rect x="28" y="20" width="64" height="52" rx="3" fill="#001810" stroke="#2a2a5a"/>
+      <rect x="32" y="24" width="56" height="44" rx="2" fill="#002418"/>
+      <text x="60" y="49" fill="#00ff00" font-family="monospace" font-size="8" text-anchor="middle" opacity="0.8">GAME</text>
+      <text x="60" y="60" fill="#00ffff" font-family="monospace" font-size="7" text-anchor="middle" opacity="0.7">BOY</text>
+      <rect x="40" y="82" width="12" height="36" rx="2" fill="#0a0a1a" stroke="#2a2a5a"/>
+      <rect x="34" y="94" width="24" height="12" rx="2" fill="#0a0a1a" stroke="#2a2a5a"/>
+      <circle cx="82" cy="98" r="10" fill="#ff007f" opacity=".85"/>
+      <circle cx="72" cy="112" r="10" fill="#fffb00" opacity=".85"/>
+      <rect x="48" y="130" width="10" height="4" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="62" y="130" width="10" height="4" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="28" y="150" width="8" height="4" rx="1" fill="#b700ff" opacity=".6"/>
+    </svg>`,
+    ps1:`<svg viewBox="0 0 200 130" fill="none">
+      <rect x="10" y="20" width="180" height="90" rx="8" fill="#141428" stroke="#00ffff" stroke-width="1.5"/>
+      <rect x="55" y="35" width="90" height="55" rx="4" fill="#0a0a1a" stroke="#2a2a5a"/>
+      <rect x="59" y="39" width="82" height="47" rx="2" fill="#000f20"/>
+      <text x="100" y="67" fill="#00ffff" font-family="monospace" font-size="12" text-anchor="middle" opacity="0.9" font-weight="bold">PlayStation</text>
+      <circle cx="25" cy="60" r="8" fill="#fffb00" opacity=".7"/>
+      <circle cx="25" cy="60" r="4" fill="#fffb00" opacity=".9"/>
+      <rect x="155" y="45" width="12" height="8" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="171" y="45" width="12" height="8" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="155" y="57" width="12" height="8" rx="2" fill="#0a0a1a" stroke="#444466"/>
+      <rect x="171" y="57" width="12" height="8" rx="2" fill="#0a0a1a" stroke="#444466"/>
+    </svg>`,
+    atari:`<svg viewBox="0 0 200 130" fill="none">
+      <rect x="20" y="40" width="160" height="50" rx="4" fill="#141428" stroke="#ff6600" stroke-width="1.5"/>
+      <rect x="30" y="50" width="140" height="10" fill="#0a0a1a"/>
+      <rect x="60" y="45" width="80" height="3" fill="#ff6600"/>
+    </svg>`,
+    arcade:`<svg viewBox="0 0 120 180" fill="none">
+      <rect x="30" y="20" width="60" height="140" rx="4" fill="#141428" stroke="#ff007f" stroke-width="1.5"/>
+      <rect x="40" y="30" width="40" height="40" fill="#000"/>
+      <circle cx="60" cy="90" r="4" fill="#ff007f"/>
+      <rect x="40" y="110" width="40" height="10" fill="#0a0a1a"/>
+    </svg>`
+  };
+  return svgs[tag]||svgs['nes'];
+}
+
+function gameCartSVG(tag){
+  const c={nes:'#00ffff',snes:'#b700ff',genesis:'#ff007f',gameboy:'#00ff00',n64:'#fffb00',ps1:'#00ffff',atari:'#ff6600',arcade:'#ff007f'};
+  const col=c[tag]||'#fffb00';
+  if(tag==='gameboy') return `<svg viewBox="0 0 80 80"><rect x="22" y="5" width="36" height="70" rx="6" fill="#13131a" stroke="${col}" stroke-width="1.5"/><rect x="28" y="12" width="24" height="20" rx="2" fill="#001a10" stroke="${col}" stroke-width=".5"/><circle cx="54" cy="50" r="5" fill="${col}" opacity=".8"/><circle cx="42" cy="50" r="5" fill="${col}" opacity=".5"/><rect x="30" y="35" width="6" height="14" rx="1" fill="#1a1a26" stroke="${col}" stroke-width=".5"/><rect x="24" y="41" width="18" height="4" rx="1" fill="#1a1a26" stroke="${col}" stroke-width=".5"/></svg>`;
+  return `<svg viewBox="0 0 80 80"><rect x="8" y="15" width="64" height="50" rx="3" fill="#13131a" stroke="${col}" stroke-width="1.5"/><rect x="16" y="22" width="30" height="20" rx="1" fill="#0a0a1a" stroke="${col}" stroke-width=".5"/><g fill="${col}" opacity=".7"><rect x="22" y="26" width="3" height="3"/><rect x="28" y="26" width="3" height="3"/><rect x="19" y="29" width="3" height="3"/><rect x="22" y="29" width="3" height="3"/><rect x="25" y="29" width="3" height="3"/><rect x="28" y="29" width="3" height="3"/><rect x="31" y="29" width="3" height="3"/><rect x="19" y="32" width="3" height="3"/><rect x="25" y="32" width="3" height="3"/><rect x="31" y="32" width="3" height="3"/></g><circle cx="57" cy="30" r="6" fill="${col}" opacity=".7"/><circle cx="49" cy="30" r="6" fill="${col}" opacity=".4"/><rect x="50" y="52" width="6" height="4" rx="1" fill="${col}" opacity=".4"/></svg>`;
+}
+
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+let cart=[];
+let activePlatform='todos';
+let activeAlpha='todos';
+let activeGenre='todos';
+let currentPage='home';
+let publishTab='game';
+
+/* ════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════ */
+function showPage(name,e){
+  if(e) e.preventDefault();
+  document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  const nav=document.getElementById('nav-'+name);
+  if(nav) nav.classList.add('active');
+  currentPage=name;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='games') renderGamesPage();
+  if(name==='consoles') renderConsolesPage();
+  if(name==='publish') renderPublishForm();
+}
+
+function selectPlatform(el,plat){
+  document.querySelectorAll('.platform-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  activePlatform=plat;
+  activeAlpha='todos';
+  activeGenre='todos';
+  showPage('games',null);
+  if(plat!=='todos') renderPlatformHero(plat);
+  else document.getElementById('platform-hero-section').innerHTML='';
+}
+
+function scrollPlatNav(dx){
+  document.getElementById('platform-nav').scrollBy({left:dx,behavior:'smooth'});
+}
+
+/* ════════════════════════════════════════════
+   PLATFORM HERO
+════════════════════════════════════════════ */
+const PLAT_INFO={
+  nes:{name:'Nintendo NES',color:'#00ffff',glow:'rgba(0,255,255,.4)',year:'1983',games:'318',desc:'La consola que resucitó la industria del videojuego.'},
+  snes:{name:'Super Nintendo',color:'#b700ff',glow:'rgba(183,0,255,.4)',year:'1990',games:'421',desc:'La mejor biblioteca de juegos de 16 bits jamás creada.'},
+  genesis:{name:'Sega Genesis',color:'#ff007f',glow:'rgba(255,0,127,.4)',year:'1988',games:'284',desc:"Blast Processing. Sonic. La rival más poderosa de Nintendo."},
+  gameboy:{name:'Game Boy',color:'#00ff00',glow:'rgba(0,255,0,.4)',year:'1989',games:'196',desc:'La portátil que conquistó el mundo con Tetris y Pokémon.'},
+  n64:{name:'Nintendo 64',color:'#fffb00',glow:'rgba(255,251,0,.4)',year:'1996',games:'248',desc:'El salto al 3D. Mario 64, Zelda OoT, GoldenEye.'},
+  ps1:{name:'PlayStation 1',color:'#00ffff',glow:'rgba(0,255,255,.4)',year:'1994',games:'312',desc:'Sony entra al mercado y cambia las reglas para siempre.'},
+  atari:{name:'Atari 2600',color:'#ff6600',glow:'rgba(255,102,0,.4)',year:'1977',games:'90',desc:'El origen de todo. El primer console gaming masivo.'},
+  arcade:{name:'Arcade Clásicos',color:'#ff007f',glow:'rgba(255,0,127,.4)',year:'1970s',games:'537',desc:'Los salones recreativos que definieron una generación.'},
+};
+function renderPlatformHero(plat){
+  const info=PLAT_INFO[plat];
+  if(!info) return;
+  document.getElementById('platform-hero-section').innerHTML=`
+    <div class="platform-hero" style="--glow:${info.glow};">
+      <div class="platform-hero-img">${consoleSVG(plat)}</div>
+      <h1 class="platform-hero-title" style="color:${info.color};text-shadow:0 0 20px ${info.glow};">${info.name}</h1>
+      <p class="platform-hero-sub">${info.desc}</p>
+      <div class="platform-hero-stats">
+        <div class="pstat"><span class="pstat-n" style="color:${info.color};">${info.year}</span><span class="pstat-l">lanzamiento</span></div>
+        <div class="pstat"><span class="pstat-n" style="color:${info.color};">+${info.games}</span><span class="pstat-l">juegos</span></div>
+      </div>
+    </div>`;
+}
+
+/* ════════════════════════════════════════════
+   GAMES PAGE
+════════════════════════════════════════════ */
+function renderGamesPage(){
+  buildAlphaBar();
+  buildGenreFilters();
+  renderGamesGrid();
+}
+
+function buildAlphaBar(){
+  const letters=['Todos','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+  document.getElementById('alpha-bar').innerHTML=letters.map(l=>`
+    <button class="alpha-btn${(l==='Todos'&&activeAlpha==='todos')||(l===activeAlpha)?' active':''}"
+      onclick="setAlpha('${l==='Todos'?'todos':l}')">${l}</button>`).join('');
+}
+
+function buildGenreFilters(){
+  const genres=['Todos',...new Set(GAMES.map(g=>g.genre))];
+  document.getElementById('genre-filters').innerHTML=genres.map(g=>`
+    <button class="chip${g==='Todos'&&activeGenre==='todos'||g===activeGenre?' active':''}"
+      onclick="setGenre('${g==='Todos'?'todos':g}')">${g}</button>`).join('');
+}
+
+function setAlpha(l){
+  activeAlpha=l;
+  document.getElementById('search-input').value='';
+  buildAlphaBar();
+  renderGamesGrid();
+}
+function setGenre(g){
+  activeGenre=g;
+  buildGenreFilters();
+  renderGamesGrid();
+}
+function onSearch(){
+  activeAlpha='todos';
+  buildAlphaBar();
+  renderGamesGrid();
+}
+
+function renderGamesGrid(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  let list=GAMES.filter(g=>{
+    if(activePlatform!=='todos'&&g.tag!==activePlatform) return false;
+    if(activeAlpha!=='todos'&&!g.name.toUpperCase().startsWith(activeAlpha)) return false;
+    if(activeGenre!=='todos'&&g.genre!==activeGenre) return false;
+    if(q&&!g.name.toLowerCase().includes(q)&&!g.genre.toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('results-count').textContent=`${list.length} resultado${list.length!==1?'s':''}`;
+  document.getElementById('games-grid').innerHTML=list.length?list.map((g,i)=>gameCardHTML(g,i)).join(''):`
+    <div style="padding:3rem;text-align:center;color:var(--muted);font-size:12px;grid-column:1/-1;">
+      No se encontraron juegos con esos filtros.
+    </div>`;
+}
+
+function gameCardHTML(g,i){
+  return `<div class="card card-enter" style="animation-delay:${i*40}ms">
+    <div class="card-img-wrap">
+      <div class="card-img">${gameCartSVG(g.tag)}</div>
+      <span class="card-platform-badge">${g.platform.toUpperCase()}</span>
+      ${g.badge?`<span class="card-badge-${g.badge==='OFERTA'?'sale':'new'}">${g.badge}</span>`:''}
+    </div>
+    <div class="card-meta"><span class="card-year">${g.year}</span><span class="card-stars">${g.stars}</span></div>
+    <div class="card-name">${g.name}</div>
+    <div class="card-genre">${g.genre}</div>
+    <div class="card-foot">
+      <div>
+        <span class="card-price">$${g.price.toLocaleString('es-AR')}</span>
+        ${g.oldPrice?`<span class="card-price-old">$${g.oldPrice.toLocaleString('es-AR')}</span>`:''}
+      </div>
+      <button class="add-btn" onclick="addToCartDirect('${g.name.replace(/'/g,"\\'")}','${g.platform}','${g.price}','${g.tag}')">+</button>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════
+   CONSOLES PAGE
+════════════════════════════════════════════ */
+function renderConsolesPage(){
+  const brands=['Todas',...new Set(CONSOLES.map(c=>c.brand))];
+  document.getElementById('console-brand-filters').innerHTML=brands.map(b=>`
+    <button class="chip" onclick="filterConsoles('${b==='Todas'?'todas':b}',this)">${b}</button>`).join('');
+  document.querySelector('#console-brand-filters .chip').classList.add('active');
+  renderConsoleGrid('todas');
+}
+
+function filterConsoles(brand,el){
+  document.querySelectorAll('#console-brand-filters .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderConsoleGrid(brand);
+}
+function onConsoleSearch(){
+  const q=document.getElementById('console-search').value.toLowerCase();
+  let list=CONSOLES.filter(c=>!q||c.name.toLowerCase().includes(q)||c.brand.toLowerCase().includes(q));
+  document.getElementById('consoles-grid').innerHTML=list.map((c,i)=>consoleCardHTML(c,i)).join('');
+}
+function renderConsoleGrid(brand){
+  const q=document.getElementById('console-search').value.toLowerCase();
+  let list=CONSOLES.filter(c=>{
+    if(brand!=='todas'&&c.brand!==brand) return false;
+    if(q&&!c.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  document.getElementById('consoles-grid').innerHTML=list.map((c,i)=>consoleCardHTML(c,i)).join('');
+}
+function consoleCardHTML(c,i){
+  const condClass=c.condition==='Mint'?'cond-mint':'cond-good';
+  return `<div class="console-card card-enter" style="animation-delay:${i*50}ms">
+    <div class="console-card-img">${consoleSVG(c.tag)}</div>
+    <div class="console-card-year">${c.brand} · ${c.year}</div>
+    <div class="console-card-name">${c.name}</div>
+    <p style="font-size:11px;color:var(--muted);">${c.desc}</p>
+    <div class="console-card-foot">
+      <span class="console-card-price">$${c.price.toLocaleString('es-AR')}</span>
+      <span class="console-card-cond ${condClass}">${c.condition}</span>
+      <button class="add-btn" onclick="addToCartDirect('${c.name.replace(/'/g,"\\'")}','${c.brand}','${c.price}','${c.tag}')">+</button>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════
+   HOME MINI GRID
+════════════════════════════════════════════ */
+function renderHomeGrid(){
+  document.getElementById('home-grid').innerHTML=GAMES.slice(0,8).map((g,i)=>gameCardHTML(g,i)).join('');
+}
+
+/* ════════════════════════════════════════════
+   PUBLISH FORM
+════════════════════════════════════════════ */
+function switchPublishTab(el,type){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  publishTab=type;
+  renderPublishForm();
+}
+function renderPublishForm(){
+  const f=document.getElementById('publish-form');
+  if(publishTab==='game'){
+    f.innerHTML=`
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nombre del juego *</label><input class="form-input" type="text" placeholder="Ej: Super Mario Bros."/></div>
+        <div class="form-group"><label class="form-label">Plataforma *</label>
+          <select class="form-select">
+            <option>NES</option><option>SNES</option><option>Sega Genesis</option>
+            <option>Game Boy</option><option>N64</option><option>PS1</option>
+            <option>Atari</option><option>Arcade</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Precio (ARS) *</label><input class="form-input" type="number" placeholder="Ej: 15000"/></div>
+        <div class="form-group"><label class="form-label">Año de lanzamiento</label><input class="form-input" type="number" placeholder="Ej: 1990"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Género</label>
+          <select class="form-select">
+            <option>Plataformas</option><option>RPG</option><option>Acción</option>
+            <option>Aventura</option><option>Pelea</option><option>Puzzle</option>
+            <option>FPS</option><option>Carreras</option><option>Arcade</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Estado del cartucho</label>
+          <select class="form-select"><option>Mint (como nuevo)</option><option>Muy bueno</option><option>Bueno</option><option>Regular</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" placeholder="Describí el estado, incluye caja, manual, etc."></textarea></div>
+      <div class="form-group"><label class="form-label">Fotos del producto</label>
+        <div class="img-upload"><span class="img-upload-icon">📷</span><span class="img-upload-txt">Hacé clic o arrastrá imágenes aquí (máx. 5 fotos)</span></div>
+      </div>
+      <button class="form-submit" onclick="submitPublish()">PUBLICAR JUEGO ▶</button>`;
+  } else {
+    f.innerHTML=`
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nombre de la consola *</label><input class="form-input" type="text" placeholder="Ej: Super Nintendo SNES"/></div>
+        <div class="form-group"><label class="form-label">Marca *</label>
+          <select class="form-select"><option>Nintendo</option><option>Sega</option><option>Sony</option><option>Atari</option><option>Otro</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Precio (ARS) *</label><input class="form-input" type="number" placeholder="Ej: 65000"/></div>
+        <div class="form-group"><label class="form-label">Año del modelo</label><input class="form-input" type="number" placeholder="Ej: 1992"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Estado</label>
+          <select class="form-select"><option>Mint (como nueva)</option><option>Muy bueno</option><option>Bueno</option><option>Para reparar</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">¿Incluye accesorios?</label>
+          <select class="form-select"><option>Controles originales</option><option>Con cables originales</option><option>Completo (caja, cables, controles)</option><option>Solo consola</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Descripción técnica</label><textarea class="form-textarea" placeholder="Describí el estado, qué incluye, si fue revisada, etc."></textarea></div>
+      <div class="form-group"><label class="form-label">Fotos de la consola</label>
+        <div class="img-upload"><span class="img-upload-icon">📷</span><span class="img-upload-txt">Hacé clic o arrastrá imágenes aquí (máx. 8 fotos)</span></div>
+      </div>
+      <button class="form-submit" onclick="submitPublish()">PUBLICAR CONSOLA ▶</button>`;
+  }
+}
+function submitPublish(){
+  showToast('✓ PUBLICACIÓN ENVIADA');
+  setTimeout(()=>showPage('home',null),1200);
+}
+
+/* ════════════════════════════════════════════
+   CART
+════════════════════════════════════════════ */
+function addToCartDirect(name,platform,price,tag){
+  const existing=cart.find(i=>i.name===name);
+  if(existing) existing.qty++;
+  else cart.push({name,platform,price:parseInt(price),tag,qty:1});
+  updateCart();
+  showToast('+ '+name.substring(0,20).toUpperCase());
+  const badge=document.getElementById('cart-count');
+  badge.classList.remove('bump');
+  void badge.offsetWidth;
+  badge.classList.add('bump');
+}
+function removeFromCart(idx){
+  cart.splice(idx,1);
+  updateCart();
+}
+function updateCart(){
+  const count=cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cart-count').textContent=count;
+  const itemsEl=document.getElementById('drawer-items');
+  if(!cart.length){
+    itemsEl.innerHTML=`<div class="drawer-empty"><div style="font-family:var(--pixel);font-size:28px;color:var(--border);margin-bottom:1rem;">🎮</div>Tu carrito está vacío.</div>`;
+    document.getElementById('drawer-total').textContent='$0';
+    return;
+  }
+  itemsEl.innerHTML=cart.map((item,i)=>`
+    <div class="drawer-item">
+      <div class="di-thumb">${gameCartSVG(item.tag)}</div>
+      <div class="di-info">
+        <div class="di-name">${item.name}</div>
+        <div class="di-plat">${item.platform}${item.qty>1?' × '+item.qty:''}</div>
+        <div class="di-price">$${(item.price*item.qty).toLocaleString('es-AR')}</div>
+      </div>
+      <button class="di-rm" onclick="removeFromCart(${i})">×</button>
+    </div>`).join('');
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('drawer-total').textContent='$'+total.toLocaleString('es-AR');
+}
+function toggleCart(e){
+  if(e) e.preventDefault();
+  document.getElementById('drawer').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function checkout(){
+  if(!cart.length){showToast('EL CARRITO ESTÁ VACÍO');return;}
+  showToast('✓ GRACIAS POR TU COMPRA ★');
+  cart=[];
+  updateCart();
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+/* ════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════ */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ════════════════════════════════════════════
+   INIT ICONS
+════════════════════════════════════════════ */
+function injectNavIcons() {
+  const platforms = ['nes', 'snes', 'genesis', 'gameboy', 'n64', 'ps1', 'atari', 'arcade'];
+  platforms.forEach(plat => {
+    const el = document.getElementById('icon-' + plat);
+    if(el) el.innerHTML = consoleSVG(plat);
+  });
+}
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+injectNavIcons();
+renderHomeGrid();
+updateCart();
+</script>
+</body>
+</html>
