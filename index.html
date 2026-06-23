@@ -7,122 +7,44 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg: #07070f;
-  --surface: #0f0f1e;
-  --card: #141428;
-  --border: #1e1e3f;
-  --border2: #2a2a5a;
-  --accent: #ffe600;
-  --accent2: #00ffee;
-  --accent3: #ff3cac;
-  --accent4: #a259ff;
-  --green: #39ff14;
-  --orange: #ff8c00;
-  --muted: #44447a;
-  --text: #c8c8f0;
-  --white: #f0f0ff;
-  --pixel: "Press Start 2P", monospace;
+  --bg: #07070f; --surface: #0f0f1e; --card: #141428; --border: #1e1e3f;
+  --border2: #2a2a5a; --accent: #ffe600; --accent2: #00ffee;
+  --accent3: #ff3cac; --accent4: #a259ff; --muted: #44447a;
+  --text: #c8c8f0; --white: #f0f0ff; --pixel: "Press Start 2P", monospace;
   --mono: "Share Tech Mono", monospace;
 }
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; line-height: 1.7; overflow-x: hidden; }
+body::after { content: ''; position: fixed; inset: 0; z-index: 9998; pointer-events: none; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px); }
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--accent4); }
 
-/* EFECTO CRT / SCANLINES */
-body::after {
-  content: ''; position: fixed; inset: 0; z-index: 9998; pointer-events: none;
-  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px);
-}
-
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--accent4); }
-
-/* ANIMACIONES CORE */
-@keyframes glitch {
-  0%,100%{clip-path:inset(0 0 98% 0);transform:translate(-2px,0);}
-  20%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0);}
-  40%{clip-path:inset(60% 0 20% 0);transform:translate(-1px,0);}
-  60%{clip-path:inset(80% 0 5% 0);transform:translate(3px,0);}
-  80%{clip-path:inset(10% 0 80% 0);transform:translate(-3px,0);}
-}
-@keyframes glitch2 {
-  0%,100%{clip-path:inset(0 0 98% 0);transform:translate(2px,0);}
-  20%{clip-path:inset(50% 0 30% 0);transform:translate(-2px,0);}
-  40%{clip-path:inset(20% 0 60% 0);transform:translate(1px,0);}
-  60%{clip-path:inset(5% 0 80% 0);transform:translate(-3px,0);}
-  80%{clip-path:inset(80% 0 10% 0);transform:translate(3px,0);}
-}
+@keyframes glitch { 0%,100%{clip-path:inset(0 0 98% 0);transform:translate(-2px,0);} 20%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0);} 40%{clip-path:inset(60% 0 20% 0);transform:translate(-1px,0);} 60%{clip-path:inset(80% 0 5% 0);transform:translate(3px,0);} 80%{clip-path:inset(10% 0 80% 0);transform:translate(-3px,0);} }
+@keyframes glitch2 { 0%,100%{clip-path:inset(0 0 98% 0);transform:translate(2px,0);} 20%{clip-path:inset(50% 0 30% 0);transform:translate(-2px,0);} 40%{clip-path:inset(20% 0 60% 0);transform:translate(1px,0);} 60%{clip-path:inset(5% 0 80% 0);transform:translate(-3px,0);} 80%{clip-path:inset(80% 0 10% 0);transform:translate(3px,0);} }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes neon-pulse { 0%,100%{text-shadow:0 0 4px currentColor,0 0 10px currentColor;} 50%{text-shadow:0 0 8px currentColor,0 0 20px currentColor,0 0 40px currentColor;} }
 
-/* HEADER Y NAVEGACIÓN SUPERIOR */
-header {
-  position: sticky; top: 0; z-index: 200;
-  background: rgba(7,7,15,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px;
-}
-
+header { position: sticky; top: 0; z-index: 200; background: rgba(7,7,15,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
 .header-left { display: flex; align-items: center; gap: 1.5rem; }
-
-/* MENÚ HAMBURGUESA */
-.menu-toggle {
-  display: flex; flex-direction: column; justify-content: space-between; 
-  width: 24px; height: 16px; cursor: pointer; z-index: 1001;
-}
-.menu-toggle .bar {
-  height: 2px; width: 100%; background: var(--accent); border-radius: 2px;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+.menu-toggle { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 16px; cursor: pointer; z-index: 1001; }
+.menu-toggle .bar { height: 2px; width: 100%; background: var(--accent); border-radius: 2px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .menu-toggle.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--accent3); }
 .menu-toggle.active .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .menu-toggle.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--accent3); }
-
-/* LOGOTIPO NEO GAMES */
-.logo {
-  font-family: var(--pixel); font-size: 14px; color: var(--accent); letter-spacing: 2px; text-decoration: none;
-  position: relative; text-shadow: 0 0 8px rgba(255,230,0,0.6), 0 0 20px rgba(255,230,0,0.3);
-  animation: neon-pulse 3s ease-in-out infinite;
-}
+.logo { font-family: var(--pixel); font-size: 14px; color: var(--accent); letter-spacing: 2px; text-decoration: none; position: relative; text-shadow: 0 0 8px rgba(255,230,0,0.6), 0 0 20px rgba(255,230,0,0.3); animation: neon-pulse 3s ease-in-out infinite; }
 .logo::before, .logo::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 .logo::before { color: var(--accent3); animation: glitch 4s infinite; left: 2px; }
 .logo::after { color: var(--accent2); animation: glitch2 4s infinite; left: -2px; }
 .logo b { color: var(--accent2); }
-
 .nav-actions { display: flex; gap: 8px; align-items: center; }
-.btn-nav {
-  background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 6px 14px;
-  font-family: var(--pixel); font-size: 8px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; position: relative; overflow: hidden;
-}
+.btn-nav { background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 6px 14px; font-family: var(--pixel); font-size: 8px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; position: relative; overflow: hidden; }
 .btn-nav:hover { color: var(--bg); border-color: var(--accent); background: var(--accent); }
-
-/* SIDEBAR (PANEL LATERAL) */
-.sidebar {
-  position: fixed; top: 60px; left: -320px; width: 320px; height: calc(100vh - 60px);
-  background: rgba(10,10,20,0.98); backdrop-filter: blur(15px); border-right: 1px solid var(--border);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 195; padding: 2rem 0; overflow-y: auto;
-  box-shadow: 10px 0 30px rgba(0,0,0,0.8);
-}
+.sidebar { position: fixed; top: 60px; left: -320px; width: 320px; height: calc(100vh - 60px); background: rgba(10,10,20,0.98); backdrop-filter: blur(15px); border-right: 1px solid var(--border); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 195; padding: 2rem 0; overflow-y: auto; box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
 .sidebar.active { transform: translateX(320px); }
-
 .nav-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-.nav-link {
-  display: block; padding: 1.2rem 2rem; color: var(--white); text-decoration: none; font-family: var(--pixel); 
-  font-size: 10px; border-left: 3px solid transparent; transition: all 0.2s ease; cursor: pointer;
-}
+.nav-link { display: block; padding: 1.2rem 2rem; color: var(--white); text-decoration: none; font-family: var(--pixel); font-size: 10px; border-left: 3px solid transparent; transition: all 0.2s ease; cursor: pointer; }
 .nav-link:hover { background: rgba(255,230,0,0.05); border-left-color: var(--accent); color: var(--accent); padding-left: 2.5rem; }
-
-/* SUBMENÚ CUENTA */
-.sub-menu { list-style: none; background: var(--bg); display: none; padding: 1rem 2rem; border-y: 1px solid var(--border); animation: fadeIn 0.3s ease; }
-.sub-menu.open { display: block; }
-.account-input {
-  width: 100%; padding: 12px; margin-bottom: 12px; background: var(--surface); border: 1px solid var(--border2); 
-  color: var(--white); font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.2s;
-}
-.account-input:focus { border-color: var(--accent2); box-shadow: 0 0 10px rgba(0,255,238,0.2); }
-
-/* PLATFORM SLIDER NAV */
 .platform-nav-wrap { position: sticky; top: 60px; z-index: 190; background: rgba(7,7,15,0.97); border-bottom: 1px solid var(--border); overflow: hidden; display: none; }
 .platform-nav { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; }
 .platform-nav::-webkit-scrollbar { display: none; }
@@ -136,33 +58,13 @@ header {
 .ptab-name { font-family: var(--pixel); font-size: 8px; color: var(--text); }
 .platform-nav-arrow { position: absolute; top: 0; bottom: 0; width: 40px; display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg,rgba(7,7,15,.95),transparent); cursor: pointer; z-index: 2; border: none; color: var(--accent); font-size: 18px; }
 .platform-nav-arrow.right { right: 0; background: linear-gradient(270deg,rgba(7,7,15,.95),transparent); }
-
-/* PAGES */
 .page { display: none; animation: fadeIn 0.4s ease; }
 .page.active { display: block; }
-
-/* NUEVA INTERFAZ PRINCIPAL (HOME) */
-.main-home {
-  max-width: 900px; margin: 4rem auto; padding: 2rem; text-align: center;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;
-}
+.main-home { max-width: 900px; margin: 4rem auto; padding: 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; }
 .home-logo-wrap { margin-bottom: 2rem; animation: fadeInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .home-logo-wrap .logo { font-size: clamp(32px, 6vw, 64px); }
-.slogan {
-  font-family: var(--pixel); font-size: clamp(10px, 2vw, 16px); color: var(--accent2); line-height: 2;
-  margin-bottom: 3rem; text-transform: uppercase; animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.description-box {
-  background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
-  padding: 3rem; text-align: left; font-size: 15px; color: var(--text); line-height: 2;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.5); animation: fadeInUp 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;
-}
-.description-box::before {
-  content: ''; position: absolute; top: 0; right: 0; width: 150px; height: 150px;
-  background: radial-gradient(circle, rgba(255,60,172,0.1) 0%, transparent 70%); pointer-events: none;
-}
-
-/* GENERAL SECTION STYLES (Resto de páginas) */
+.slogan { font-family: var(--pixel); font-size: clamp(10px, 2vw, 16px); color: var(--accent2); line-height: 2; margin-bottom: 3rem; text-transform: uppercase; animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.description-box { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 3rem; text-align: left; font-size: 15px; color: var(--text); line-height: 2; box-shadow: 0 15px 30px rgba(0,0,0,0.5); animation: fadeInUp 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden; }
 .section { max-width: 1200px; margin: 0 auto; padding: 3.5rem 2rem; }
 .section-hd { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
 .section-ttl { font-family: var(--pixel); font-size: 12px; color: var(--white); letter-spacing: 1px; }
@@ -172,26 +74,7 @@ header {
 .search-btn { background: var(--accent); border: none; color: var(--bg); padding: 12px 20px; font-family: var(--pixel); font-size: 10px; cursor: pointer; transition: opacity 0.2s;}
 .search-btn:hover { opacity: 0.8; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
-
-/* FORMS (Cuenta y Soporte) */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-.form-label { font-family: var(--pixel); font-size: 8px; color: var(--accent2); }
-.form-control { background: var(--bg); border: 1px solid var(--border2); color: var(--white); padding: 12px; font-family: var(--mono); outline: none; transition: border-color 0.2s; width: 100%; }
-.form-control:focus { border-color: var(--accent); }
-.form-textarea { min-height: 120px; resize: vertical; }
-.btn-submit { background: var(--accent4); color: var(--white); border: none; padding: 15px 30px; font-family: var(--pixel); font-size: 10px; cursor: pointer; transition: background 0.2s; }
-.btn-submit:hover { background: var(--accent3); }
-
-@media (max-width: 768px) {
-  .form-grid { grid-template-columns: 1fr; }
-}
-
-/* CARDS (Juegos y Consolas) */
-.card, .console-card {
-  background: var(--card); padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem;
-  cursor: pointer; position: relative; overflow: hidden; transition: background 0.2s, transform 0.2s;
-}
+.card, .console-card { background: var(--card); padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; cursor: pointer; position: relative; overflow: hidden; transition: background 0.2s, transform 0.2s; }
 .card:hover, .console-card:hover { background: var(--surface); transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2; border: 1px solid var(--accent2); }
 .card-img-wrap, .console-card-img { aspect-ratio: 1; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 .console-card-img { aspect-ratio: 4/3; }
@@ -201,8 +84,6 @@ header {
 .card-price, .console-card-price { font-family: var(--pixel); font-size: 13px; color: var(--accent); }
 .add-btn { background: transparent; border: 1px solid var(--border2); color: var(--text); width: 34px; height: 34px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .add-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-
-/* AUTH MODAL STYLES */
 .auth-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
 .auth-modal-overlay.open { display: flex; opacity: 1; pointer-events: all; }
 .auth-card { background: var(--card); border: 2px solid var(--accent); padding: 2.5rem; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 1rem; position: relative; box-shadow: 0 0 30px rgba(255,230,0,0.15); animation: fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -212,14 +93,10 @@ header {
 .auth-input:focus { border-color: var(--accent); }
 .auth-btn { background: var(--accent); color: var(--bg); border: none; padding: 14px; font-family: var(--pixel); font-size: 10px; cursor: pointer; margin-top: 10px; }
 .auth-switch { text-align: center; font-size: 10px; color: var(--accent2); cursor: pointer; margin-top: 10px; }
-
-/* CART DRAWER */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;opacity:0;pointer-events:none;transition:opacity .25s;}
 .overlay.open{opacity:1;pointer-events:all;}
 .drawer{position:fixed;top:0;right:0;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:501;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
 .drawer.open{transform:translateX(0);}
-
-/* TOAST */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--card);border:1px solid var(--accent);color:var(--accent);font-family:var(--pixel);font-size:8px;padding:10px 22px;z-index:600;transition:transform .25s cubic-bezier(.4,0,.2,1);white-space:nowrap;letter-spacing:1px;box-shadow:0 0 20px rgba(255,230,0,.3);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 </style>
@@ -229,13 +106,10 @@ header {
 <header>
   <div class="header-left">
     <div class="menu-toggle" id="mobile-menu" onclick="toggleSidebar()">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
     </div>
     <a href="#" class="logo" data-text="NEOGAMES" onclick="showPage('home',event)">NEO<b>GAMES</b></a>
   </div>
-  
   <div class="nav-actions">
     <button class="btn-nav" id="header-auth-btn" onclick="showAuthModal()"><span>🔑 ACCEDER</span></button>
     <button class="btn-nav" onclick="toggleCart(event)"><span>🎮 CARRITO <span class="cart-badge" id="cart-count">0</span></span></button>
@@ -247,7 +121,7 @@ header {
     <li><a class="nav-link" onclick="showPage('consoles', event)">Consolas</a></li>
     <li><a class="nav-link" onclick="showPage('games', event)">Juegos</a></li>
     <li><a class="nav-link" onclick="showPage('publish', event)">Publicar Producto</a></li>
-    <li><a class="nav-link" onclick="showPage('account', event)">Cuenta</a></li>
+    <li id="menu-account-item" style="display: none;"><a class="nav-link" onclick="showPage('account', event)">Cuenta</a></li>
     <li><a class="nav-link" onclick="showPage('support', event)">Soporte</a></li>
     <li id="logout-container" style="display: none; margin-top: 20px; border-top: 1px solid var(--border);">
       <a class="nav-link" style="color: var(--accent3);" onclick="handleLogout(event)">Cerrar Sesión ✕</a>
@@ -273,14 +147,9 @@ header {
     <div class="home-logo-wrap">
       <a href="#" class="logo" data-text="NEOGAMES" style="cursor: default;">NEO<b>GAMES</b></a>
     </div>
-    
     <h2 class="slogan">Evolucionando tu ecosistema<br>de entretenimiento.</h2>
-    
     <div class="description-box">
-      Bienvenido a <strong>NeoGames</strong>, la plataforma transaccional diseñada para optimizar el intercambio de hardware y software de entretenimiento interactivo.
-      <br><br>
-      <strong style="color: var(--accent3); font-family: var(--pixel); font-size: 10px; display: block; margin-bottom: 10px; margin-top: 20px;">// QUÉ PUEDES HACER</strong>
-      El sistema te permite explorar un catálogo estructurado para adquirir las últimas consolas y títulos físicos del mercado retro. Simultáneamente, cuentas con la capacidad de operar como vendedor, publicando tus propios productos (hardware o cartuchos) mediante un motor de publicación simplificado, y gestionando la logística de distribución directamente desde el nodo de tu cuenta.
+      Bienvenido a <strong>NeoGames</strong>. Para acceder a tu nodo logístico y gestión de perfil, es obligatorio iniciar sesión en el sistema.
     </div>
   </main>
 </div>
@@ -306,7 +175,7 @@ header {
   <div class="section">
     <div class="section-hd"><h2 class="section-ttl">Módulo de Publicación</h2></div>
     <div class="description-box" style="margin-bottom: 2rem; padding: 2rem;">
-      <strong style="color: var(--accent); font-family: var(--pixel); font-size: 8px;">EN DESARROLLO:</strong> La API de inyección de productos se encuentra temporalmente deshabilitada en la interfaz cliente.
+      <strong style="color: var(--accent); font-family: var(--pixel); font-size: 8px;">EN DESARROLLO:</strong> La API de inyección de productos se encuentra temporalmente deshabilitada.
     </div>
   </div>
 </div>
@@ -314,25 +183,13 @@ header {
 <div class="page" id="page-account">
   <div class="section">
     <div class="section-hd"><h2 class="section-ttl">Gestión de Perfil y Nodo Logístico</h2></div>
-    
     <div class="description-box" style="padding: 2rem; margin-bottom: 2rem; background: var(--card);">
       <h3 style="font-family: var(--pixel); font-size: 10px; color: var(--accent2); margin-bottom: 1.5rem;">DATOS PERSONALES</h3>
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">Nombre de Usuario (Alias)</label><input type="text" class="form-control" placeholder="Ej: PlayerOne99"></div>
-        <div class="form-group"><label class="form-label">Nombre Completo</label><input type="text" class="form-control" placeholder="Ej: Juan Pérez"></div>
-        <div class="form-group"><label class="form-label">E-mail de Contacto (Notificaciones)</label><input type="email" class="form-control" placeholder="Para seguimiento de envíos"></div>
-        <div class="form-group"><label class="form-label">Teléfono Móvil</label><input type="tel" class="form-control" placeholder="+54 9..."></div>
+      <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div class="form-group"><label class="form-label">Alias</label><input type="text" class="form-control" style="width:100%;padding:12px;background:var(--bg);"></div>
+        <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-control" style="width:100%;padding:12px;background:var(--bg);"></div>
       </div>
-      
-      <h3 style="font-family: var(--pixel); font-size: 10px; color: var(--accent2); margin-top: 2rem; margin-bottom: 1.5rem;">DIRECCIÓN DE ENVÍO</h3>
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">Calle y Número</label><input type="text" class="form-control" placeholder="Ej: Av. Siempreviva 742"></div>
-        <div class="form-group"><label class="form-label">Ciudad / Localidad</label><input type="text" class="form-control" placeholder="Ciudad"></div>
-        <div class="form-group"><label class="form-label">Provincia</label><input type="text" class="form-control" placeholder="Provincia"></div>
-        <div class="form-group"><label class="form-label">Código Postal</label><input type="text" class="form-control" placeholder="Ej: 3500"></div>
-      </div>
-      
-      <button class="btn-submit" onclick="showToast('✓ DATOS DE CUENTA ACTUALIZADOS')">GUARDAR CONFIGURACIÓN</button>
+      <button class="btn-submit" onclick="showToast('✓ DATOS ACTUALIZADOS')" style="margin-top:20px;padding:15px;background:var(--accent4);border:none;color:white;cursor:pointer;">GUARDAR</button>
     </div>
   </div>
 </div>
@@ -340,23 +197,8 @@ header {
 <div class="page" id="page-support">
   <div class="section">
     <div class="section-hd"><h2 class="section-ttl">Centro de Soporte Técnico</h2></div>
-    
-    <div class="form-grid" style="grid-template-columns: 1fr; max-width: 700px; margin: 0 auto;">
-      <div class="description-box" style="padding: 2rem; background: var(--card);">
-        <p style="color: var(--muted); font-size: 13px; margin-bottom: 2rem;">¿Tuviste un problema con una transacción, el hardware recibido no coincide con las especificaciones, o necesitas ayuda con tu cuenta? Abre un ticket de soporte.</p>
-        
-        <div class="form-group" style="margin-bottom: 1rem;">
-          <label class="form-label">Asunto / Naturaleza del problema</label>
-          <input type="text" class="form-control" placeholder="Ej: Falla en la lectura del cartucho SNES">
-        </div>
-        
-        <div class="form-group" style="margin-bottom: 1.5rem;">
-          <label class="form-label">Descripción Detallada</label>
-          <textarea class="form-control form-textarea" placeholder="Describe el error, código de transacción o problema con la plataforma..."></textarea>
-        </div>
-        
-        <button class="btn-submit" style="width: 100%;" onclick="showToast('✓ TICKET GENERADO. TE CONTACTAREMOS PRONTO.')">ENVIAR TICKET DE SOPORTE</button>
-      </div>
+    <div class="description-box" style="padding: 2rem; background: var(--card);">
+      <p style="color: var(--muted); font-size: 13px; margin-bottom: 1rem;">Centro de tickets abierto.</p>
     </div>
   </div>
 </div>
@@ -364,7 +206,7 @@ header {
 <div class="overlay" id="overlay" onclick="toggleCart(event)"></div>
 <div class="drawer" id="drawer">
   <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-    <span style="font-family:var(--pixel);font-size:10px;color:var(--white);">// CARRITO DE COMPRAS</span>
+    <span style="font-family:var(--pixel);font-size:10px;color:var(--white);">// CARRITO</span>
     <button onclick="toggleCart(event)" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;">×</button>
   </div>
   <div id="drawer-items" style="flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px;"></div>
@@ -373,7 +215,7 @@ header {
       <span style="font-size:11px;color:var(--muted);letter-spacing:2px;">TOTAL</span>
       <span id="drawer-total" style="font-family:var(--pixel);font-size:16px;color:var(--accent);">$0</span>
     </div>
-    <button onclick="checkout()" style="width:100%;background:linear-gradient(90deg,var(--accent4),var(--accent3));border:none;color:var(--white);padding:14px;font-family:var(--pixel);font-size:9px;cursor:pointer;">FINALIZAR COMPRA ▶</button>
+    <button onclick="checkout()" style="width:100%;background:linear-gradient(90deg,var(--accent4),var(--accent3));border:none;color:var(--white);padding:14px;font-family:var(--pixel);font-size:9px;cursor:pointer;">FINALIZAR</button>
   </div>
 </div>
 
@@ -384,124 +226,71 @@ header {
     <input type="email" class="auth-input" id="auth-email" placeholder="Correo electrónico">
     <input type="password" class="auth-input" id="auth-password" placeholder="Contraseña">
     <button class="auth-btn" onclick="handleAuth()">CONFIRMAR</button>
-    <div class="auth-switch" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate aquí.</div>
+    <div class="auth-switch" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate.</div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ════════════════════════════════════════════
-   DATOS DUMMY (Base de Datos Cliente)
-════════════════════════════════════════════ */
 const GAMES = [
   {id:1,name:'Super Mario Bros. 3',platform:'NES',tag:'nes',year:1988,price:12999},
   {id:2,name:'Sonic the Hedgehog 2',platform:'Sega Genesis',tag:'genesis',year:1992,price:9999},
   {id:3,name:'Super Metroid',platform:'SNES',tag:'snes',year:1994,price:18999},
   {id:4,name:'Pokémon Red',platform:'Game Boy',tag:'gameboy',year:1996,price:14999},
-  {id:5,name:'Crash Bandicoot',platform:'PS1',tag:'ps1',year:1996,price:15999},
-  {id:6,name:'The Legend of Zelda',platform:'NES',tag:'nes',year:1986,price:16500},
-  {id:7,name:'Mortal Kombat II',platform:'Sega Genesis',tag:'genesis',year:1993,price:11500}
+  {id:5,name:'Crash Bandicoot',platform:'PS1',tag:'ps1',year:1996,price:15999}
 ];
 const CONSOLES = [
-  {id:1,name:'Nintendo NES',brand:'Nintendo',year:1983,price:45999,condition:'Bueno',tag:'nes'},
-  {id:2,name:'Super Nintendo',brand:'Nintendo',year:1990,price:69999,condition:'Mint',tag:'snes'},
-  {id:3,name:'Sega Genesis',brand:'Sega',year:1988,price:52999,condition:'Bueno',tag:'genesis'},
-  {id:4,name:'PlayStation 1',brand:'Sony',year:1994,price:59999,condition:'Bueno',tag:'ps1'}
+  {id:1,name:'Nintendo NES',brand:'Nintendo',year:1983,price:45999,tag:'nes'},
+  {id:2,name:'Super Nintendo',brand:'Nintendo',year:1990,price:69999,tag:'snes'}
 ];
 
-/* ════════════════════════════════════════════
-   VECTORES GRÁFICOS (SVG)
-════════════════════════════════════════════ */
-function gameCartSVG(tag){
-  const c={nes:'#00ffee',snes:'#a259ff',genesis:'#ff3cac',gameboy:'#39ff14',ps1:'#ffe600'};
-  const col=c[tag]||'#ffe600';
-  return `<svg viewBox="0 0 80 80"><rect x="8" y="15" width="64" height="50" rx="3" fill="#13131a" stroke="${col}" stroke-width="1.5"/><rect x="16" y="22" width="30" height="20" rx="1" fill="#0a0a1a" stroke="${col}" stroke-width=".5"/></svg>`;
-}
-function consoleSVG(tag){
-  return `<svg viewBox="0 0 180 130" fill="none"><rect x="10" y="30" width="160" height="80" rx="6" fill="#1a1a2e" stroke="#ffe600" stroke-width="1.5"/></svg>`;
-}
+function gameCartSVG(tag){ return `<svg viewBox="0 0 80 80"><rect x="8" y="15" width="64" height="50" rx="3" fill="#13131a" stroke="#ffe600" stroke-width="1.5"/></svg>`; }
+function consoleSVG(tag){ return `<svg viewBox="0 0 180 130" fill="none"><rect x="10" y="30" width="160" height="80" rx="6" fill="#1a1a2e" stroke="#ffe600" stroke-width="1.5"/></svg>`; }
 
-/* ════════════════════════════════════════════
-   LÓGICA DE ESTADO
-════════════════════════════════════════════ */
 let activePlatform = 'todos';
 let isUserLoggedIn = false;
 
-/* ════════════════════════════════════════════
-   LÓGICA DEL DOM Y ENRUTAMIENTO
-════════════════════════════════════════════ */
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('active');
-  document.getElementById('mobile-menu').classList.toggle('active');
-}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('mobile-menu').classList.toggle('active'); }
 
 function showPage(name, e) {
   if (e) e.preventDefault();
   
-  // Ocultar todas las páginas
+  // Guard lógico para restringir acceso a Cuenta
+  if (name === 'account' && !isUserLoggedIn) {
+      showToast('× SESIÓN REQUERIDA');
+      showAuthModal();
+      return;
+  }
+  
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  // Mostrar la solicitada
   document.getElementById('page-' + name).classList.add('active');
   
-  // Cerrar sidebar si se hizo clic en un enlace
-  if (document.getElementById('sidebar').classList.contains('active')) {
-    toggleSidebar();
-  }
+  if (document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
 
-  // Mostrar/Ocultar barra de plataformas
   const platformNav = document.getElementById('platform-nav-wrap');
-  if(name === 'games' || name === 'consoles') {
-      platformNav.style.display = 'block';
-  } else {
-      platformNav.style.display = 'none';
-  }
+  platformNav.style.display = (name === 'games' || name === 'consoles') ? 'block' : 'none';
 
   window.scrollTo({top:0, behavior:'smooth'});
-  
-  // Renderizar contenido dinámico
   if(name === 'games') renderGamesGrid();
   if(name === 'consoles') renderConsoleGrid();
 }
 
-/* ════════════════════════════════════════════
-   FILTROS Y CATÁLOGOS (Solución Aplicada)
-════════════════════════════════════════════ */
 function selectPlatform(el, plat) {
-  // Limpiar estados activos visuales
   document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  
-  // Actualizar estado
   activePlatform = plat;
-  
-  // Evaluar en qué página se encuentra el usuario para no forzar redirección
   const activePage = document.querySelector('.page.active').id;
-  
-  if (activePage === 'page-consoles') {
-    renderConsoleGrid();
-  } else if (activePage === 'page-games') {
-    renderGamesGrid();
-  } else {
-    // Si está en el home u otra página, redirigir a juegos como comportamiento por defecto
-    showPage('games', null);
-  }
+  if (activePage === 'page-consoles') renderConsoleGrid();
+  else if (activePage === 'page-games') renderGamesGrid();
+  else showPage('games', null);
 }
 
-function scrollPlatNav(dx){
-  document.getElementById('platform-nav').scrollBy({left:dx,behavior:'smooth'});
-}
+function scrollPlatNav(dx){ document.getElementById('platform-nav').scrollBy({left:dx,behavior:'smooth'}); }
 
 function renderGamesGrid() {
   const filteredGames = GAMES.filter(g => activePlatform === 'todos' || g.tag === activePlatform);
   const grid = document.getElementById('games-grid');
-  document.getElementById('results-count').textContent = `Resultados: ${filteredGames.length}`;
-  
-  if (filteredGames.length === 0) {
-    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--muted);">No hay software registrado para esta arquitectura.</div>`;
-    return;
-  }
-
   grid.innerHTML = filteredGames.map(g => `
     <div class="card">
       <div class="card-img-wrap">${gameCartSVG(g.tag)}</div>
@@ -513,15 +302,8 @@ function renderGamesGrid() {
 }
 
 function renderConsoleGrid() {
-  // Ahora el filtro también se aplica a las consolas
   const filteredConsoles = CONSOLES.filter(c => activePlatform === 'todos' || c.tag === activePlatform);
   const grid = document.getElementById('consoles-grid');
-  
-  if (filteredConsoles.length === 0) {
-    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--muted);">No hay hardware registrado para esta arquitectura en el inventario actual.</div>`;
-    return;
-  }
-
   grid.innerHTML = filteredConsoles.map(c => `
     <div class="console-card">
       <div class="console-card-img">${consoleSVG(c.tag)}</div>
@@ -535,37 +317,16 @@ function renderConsoleGrid() {
 function onSearch() { renderGamesGrid(); }
 function onConsoleSearch() { renderConsoleGrid(); }
 
-/* ════════════════════════════════════════════
-   CARRITO DE COMPRAS
-════════════════════════════════════════════ */
 let cart = [];
-function addToCart(name, price) {
-  cart.push({name, price});
-  updateCart();
-  showToast('+ ' + name.toUpperCase());
-}
+function addToCart(name, price) { cart.push({name, price}); updateCart(); showToast('+ ' + name.toUpperCase()); }
 function updateCart() {
   document.getElementById('cart-count').textContent = cart.length;
   const itemsEl = document.getElementById('drawer-items');
-  if(!cart.length) {
-    itemsEl.innerHTML = `<div style="text-align:center;color:var(--muted);margin-top:20px;">Vacío</div>`;
-    document.getElementById('drawer-total').textContent = '$0';
-    return;
-  }
-  itemsEl.innerHTML = cart.map((item, i) => `
-    <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:10px;">
-      <span style="color:white;font-size:12px;">${item.name}</span>
-      <span style="color:var(--accent);">$${item.price}</span>
-    </div>
-  `).join('');
+  itemsEl.innerHTML = cart.map(item => `<div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:10px;"><span style="color:white;font-size:12px;">${item.name}</span><span style="color:var(--accent);">$${item.price}</span></div>`).join('');
   document.getElementById('drawer-total').textContent = '$' + cart.reduce((s,i)=>s+i.price,0);
 }
-function toggleCart(e) {
-  if(e) e.preventDefault();
-  document.getElementById('drawer').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('open');
-}
-function checkout() { showToast('✓ GRACIAS POR TU COMPRA'); cart=[]; updateCart(); toggleCart(); }
+function toggleCart(e) { if(e) e.preventDefault(); document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+function checkout() { showToast('✓ COMPRA FINALIZADA'); cart=[]; updateCart(); toggleCart(); }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -573,32 +334,17 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-/* ════════════════════════════════════════════
-   LÓGICA DE AUTENTICACIÓN Y SESIÓN
-════════════════════════════════════════════ */
+function showAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; setTimeout(() => document.getElementById('auth-modal').classList.add('open'), 10); }
+function closeAuthModal() { document.getElementById('auth-modal').classList.remove('open'); setTimeout(() => document.getElementById('auth-modal').style.display = 'none', 300); }
 let isLoginMode = true;
-
-function showAuthModal() {
-  const modal = document.getElementById('auth-modal');
-  modal.style.display = 'flex';
-  setTimeout(() => modal.classList.add('open'), 10);
-}
-
-function closeAuthModal() {
-  const modal = document.getElementById('auth-modal');
-  modal.classList.remove('open');
-  setTimeout(() => modal.style.display = 'none', 300);
-}
-
-function toggleAuthMode() {
-  isLoginMode = !isLoginMode;
-  document.getElementById('auth-title').textContent = isLoginMode ? "INICIAR SESIÓN" : "REGISTRO";
-}
+function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('auth-title').textContent = isLoginMode ? "INICIAR SESIÓN" : "REGISTRO"; }
 
 function loginSuccess() {
   isUserLoggedIn = true;
   document.getElementById('header-auth-btn').style.display = 'none'; 
   document.getElementById('logout-container').style.display = 'block'; 
+  // Habilitar acceso al menú de cuenta
+  document.getElementById('menu-account-item').style.display = 'block';
   closeAuthModal();
 }
 
@@ -606,34 +352,23 @@ function handleAuth() {
   const email = document.getElementById('auth-email').value;
   const pass = document.getElementById('auth-password').value;
   if (!email || !pass) return showToast('× COMPLETA LOS CAMPOS');
-  
   if (isLoginMode) {
-    if (localStorage.getItem(email) === pass) { 
-      showToast('✓ ACCESO CONCEDIDO'); 
-      loginSuccess();
-    } else { 
-      showToast('× CREDENCIALES INVÁLIDAS'); 
-    }
-  } else {
-    localStorage.setItem(email, pass); 
-    showToast('✓ REGISTRADO'); 
-    toggleAuthMode();
-  }
+    if (localStorage.getItem(email) === pass) { showToast('✓ ACCESO CONCEDIDO'); loginSuccess(); } 
+    else { showToast('× CREDENCIALES INVÁLIDAS'); }
+  } else { localStorage.setItem(email, pass); showToast('✓ REGISTRADO'); toggleAuthMode(); }
 }
 
 function handleLogout(e) {
   if (e) e.preventDefault();
   isUserLoggedIn = false;
-  
   document.getElementById('header-auth-btn').style.display = 'flex';
   document.getElementById('logout-container').style.display = 'none';
-  
+  // Ocultar acceso al menú de cuenta
+  document.getElementById('menu-account-item').style.display = 'none';
   showToast('SESIÓN FINALIZADA');
-  
   showPage('home');
 }
 
-// Inicialización
 window.onload = function() {
   updateCart();
   setTimeout(showAuthModal, 500);
