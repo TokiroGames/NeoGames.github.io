@@ -113,6 +113,15 @@ header {
 }
 .nav-link:hover { background: rgba(255,230,0,0.05); border-left-color: var(--accent); color: var(--accent); padding-left: 2.5rem; }
 
+/* SUBMENÚ CUENTA */
+.sub-menu { list-style: none; background: var(--bg); display: none; padding: 1rem 2rem; border-y: 1px solid var(--border); animation: fadeIn 0.3s ease; }
+.sub-menu.open { display: block; }
+.account-input {
+  width: 100%; padding: 12px; margin-bottom: 12px; background: var(--surface); border: 1px solid var(--border2); 
+  color: var(--white); font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.2s;
+}
+.account-input:focus { border-color: var(--accent2); box-shadow: 0 0 10px rgba(0,255,238,0.2); }
+
 /* PLATFORM SLIDER NAV */
 .platform-nav-wrap { position: sticky; top: 60px; z-index: 190; background: rgba(7,7,15,0.97); border-bottom: 1px solid var(--border); overflow: hidden; display: none; }
 .platform-nav { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; }
@@ -287,7 +296,7 @@ header {
 
 <div class="page" id="page-consoles">
   <div class="section">
-    <div class="section-hd"><h2 class="section-ttl">Hardware y Consolas</h2></div>
+    <div class="section-hd"><h2 class="section-ttl">Catálogo de Consolas</h2></div>
     <div class="search-wrap"><input class="search-input" id="console-search" type="text" placeholder="Buscar hardware..." oninput="onConsoleSearch()"/><button class="search-btn" onclick="onConsoleSearch()">BUSCAR</button></div>
     <div class="grid" id="consoles-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));"></div>
   </div>
@@ -396,7 +405,9 @@ const GAMES = [
 ];
 const CONSOLES = [
   {id:1,name:'Nintendo NES',brand:'Nintendo',year:1983,price:45999,condition:'Bueno',tag:'nes'},
-  {id:2,name:'Super Nintendo',brand:'Nintendo',year:1990,price:69999,condition:'Mint',tag:'snes'}
+  {id:2,name:'Super Nintendo',brand:'Nintendo',year:1990,price:69999,condition:'Mint',tag:'snes'},
+  {id:3,name:'Sega Genesis',brand:'Sega',year:1988,price:52999,condition:'Bueno',tag:'genesis'},
+  {id:4,name:'PlayStation 1',brand:'Sony',year:1994,price:59999,condition:'Bueno',tag:'ps1'}
 ];
 
 /* ════════════════════════════════════════════
@@ -454,17 +465,27 @@ function showPage(name, e) {
 }
 
 /* ════════════════════════════════════════════
-   FILTROS Y CATÁLOGOS (Solución de Filtro)
+   FILTROS Y CATÁLOGOS (Solución Aplicada)
 ════════════════════════════════════════════ */
 function selectPlatform(el, plat) {
-  // 1. Limpiar estados activos visuales
+  // Limpiar estados activos visuales
   document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
-  // 2. Aplicar estado activo al presionado
   el.classList.add('active');
-  // 3. Actualizar variable de estado global
+  
+  // Actualizar estado
   activePlatform = plat;
-  // 4. Forzar renderizado
-  showPage('games', null);
+  
+  // Evaluar en qué página se encuentra el usuario para no forzar redirección
+  const activePage = document.querySelector('.page.active').id;
+  
+  if (activePage === 'page-consoles') {
+    renderConsoleGrid();
+  } else if (activePage === 'page-games') {
+    renderGamesGrid();
+  } else {
+    // Si está en el home u otra página, redirigir a juegos como comportamiento por defecto
+    showPage('games', null);
+  }
 }
 
 function scrollPlatNav(dx){
@@ -472,9 +493,7 @@ function scrollPlatNav(dx){
 }
 
 function renderGamesGrid() {
-  // Filtrar el array basado en activePlatform
   const filteredGames = GAMES.filter(g => activePlatform === 'todos' || g.tag === activePlatform);
-  
   const grid = document.getElementById('games-grid');
   document.getElementById('results-count').textContent = `Resultados: ${filteredGames.length}`;
   
@@ -494,7 +513,16 @@ function renderGamesGrid() {
 }
 
 function renderConsoleGrid() {
-  document.getElementById('consoles-grid').innerHTML = CONSOLES.map(c => `
+  // Ahora el filtro también se aplica a las consolas
+  const filteredConsoles = CONSOLES.filter(c => activePlatform === 'todos' || c.tag === activePlatform);
+  const grid = document.getElementById('consoles-grid');
+  
+  if (filteredConsoles.length === 0) {
+    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--muted);">No hay hardware registrado para esta arquitectura en el inventario actual.</div>`;
+    return;
+  }
+
+  grid.innerHTML = filteredConsoles.map(c => `
     <div class="console-card">
       <div class="console-card-img">${consoleSVG(c.tag)}</div>
       <div class="console-card-name">${c.name}</div>
@@ -504,10 +532,8 @@ function renderConsoleGrid() {
   `).join('');
 }
 
-function onSearch() {
-  // Simplificado para la demostración
-  renderGamesGrid(); 
-}
+function onSearch() { renderGamesGrid(); }
+function onConsoleSearch() { renderConsoleGrid(); }
 
 /* ════════════════════════════════════════════
    CARRITO DE COMPRAS
@@ -571,8 +597,8 @@ function toggleAuthMode() {
 
 function loginSuccess() {
   isUserLoggedIn = true;
-  document.getElementById('header-auth-btn').style.display = 'none'; // Ocultar botón "Acceder"
-  document.getElementById('logout-container').style.display = 'block'; // Mostrar "Cerrar sesión" en sidebar
+  document.getElementById('header-auth-btn').style.display = 'none'; 
+  document.getElementById('logout-container').style.display = 'block'; 
   closeAuthModal();
 }
 
@@ -595,18 +621,15 @@ function handleAuth() {
   }
 }
 
-// Cierre de sesión (Redirección al inicio)
 function handleLogout(e) {
   if (e) e.preventDefault();
   isUserLoggedIn = false;
   
-  // Restaurar UI
   document.getElementById('header-auth-btn').style.display = 'flex';
   document.getElementById('logout-container').style.display = 'none';
   
   showToast('SESIÓN FINALIZADA');
   
-  // Enrutamiento seguro a Home
   showPage('home');
 }
 
