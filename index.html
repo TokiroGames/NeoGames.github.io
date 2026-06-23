@@ -74,6 +74,13 @@ header { position: sticky; top: 0; z-index: 200; background: rgba(7,7,15,0.95); 
 .search-btn { background: var(--accent); border: none; color: var(--bg); padding: 12px 20px; font-family: var(--pixel); font-size: 10px; cursor: pointer; transition: opacity 0.2s;}
 .search-btn:hover { opacity: 0.8; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-label { font-family: var(--pixel); font-size: 8px; color: var(--accent2); }
+.form-control { background: var(--bg); border: 1px solid var(--border2); color: var(--white); padding: 12px; font-family: var(--mono); outline: none; transition: border-color 0.2s; width: 100%; }
+.form-control:focus { border-color: var(--accent); }
+.btn-submit { background: var(--accent4); color: var(--white); border: none; padding: 15px 30px; font-family: var(--pixel); font-size: 10px; cursor: pointer; transition: background 0.2s; }
+.btn-submit:hover { background: var(--accent3); }
 .card, .console-card { background: var(--card); padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; cursor: pointer; position: relative; overflow: hidden; transition: background 0.2s, transform 0.2s; }
 .card:hover, .console-card:hover { background: var(--surface); transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2; border: 1px solid var(--accent2); }
 .card-img-wrap, .console-card-img { aspect-ratio: 1; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
@@ -183,13 +190,25 @@ header { position: sticky; top: 0; z-index: 200; background: rgba(7,7,15,0.95); 
 <div class="page" id="page-account">
   <div class="section">
     <div class="section-hd"><h2 class="section-ttl">Gestión de Perfil y Nodo Logístico</h2></div>
+    
     <div class="description-box" style="padding: 2rem; margin-bottom: 2rem; background: var(--card);">
       <h3 style="font-family: var(--pixel); font-size: 10px; color: var(--accent2); margin-bottom: 1.5rem;">DATOS PERSONALES</h3>
-      <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
-        <div class="form-group"><label class="form-label">Alias</label><input type="text" class="form-control" style="width:100%;padding:12px;background:var(--bg);"></div>
-        <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-control" style="width:100%;padding:12px;background:var(--bg);"></div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Nombre de Usuario (Alias)</label><input type="text" class="form-control" placeholder="Ej: PlayerOne99"></div>
+        <div class="form-group"><label class="form-label">Nombre Completo</label><input type="text" class="form-control" placeholder="Ej: Juan Pérez"></div>
+        <div class="form-group"><label class="form-label">E-mail de Contacto (Notificaciones)</label><input type="email" class="form-control" placeholder="Para seguimiento de envíos"></div>
+        <div class="form-group"><label class="form-label">Teléfono Móvil</label><input type="tel" class="form-control" placeholder="+54 9..."></div>
       </div>
-      <button class="btn-submit" onclick="showToast('✓ DATOS ACTUALIZADOS')" style="margin-top:20px;padding:15px;background:var(--accent4);border:none;color:white;cursor:pointer;">GUARDAR</button>
+      
+      <h3 style="font-family: var(--pixel); font-size: 10px; color: var(--accent2); margin-top: 2rem; margin-bottom: 1.5rem;">DIRECCIÓN DE ENVÍO</h3>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Calle y Número</label><input type="text" class="form-control" placeholder="Ej: Av. Siempreviva 742"></div>
+        <div class="form-group"><label class="form-label">Ciudad / Localidad</label><input type="text" class="form-control" placeholder="Ciudad"></div>
+        <div class="form-group"><label class="form-label">Provincia</label><input type="text" class="form-control" placeholder="Provincia"></div>
+        <div class="form-group"><label class="form-label">Código Postal</label><input type="text" class="form-control" placeholder="Ej: 3500"></div>
+      </div>
+      
+      <button class="btn-submit" onclick="showToast('✓ DATOS DE CUENTA ACTUALIZADOS')">GUARDAR CONFIGURACIÓN</button>
     </div>
   </div>
 </div>
@@ -256,7 +275,6 @@ function toggleSidebar() { document.getElementById('sidebar').classList.toggle('
 function showPage(name, e) {
   if (e) e.preventDefault();
   
-  // Guard lógico para restringir acceso a Cuenta
   if (name === 'account' && !isUserLoggedIn) {
       showToast('× SESIÓN REQUERIDA');
       showAuthModal();
@@ -343,7 +361,6 @@ function loginSuccess() {
   isUserLoggedIn = true;
   document.getElementById('header-auth-btn').style.display = 'none'; 
   document.getElementById('logout-container').style.display = 'block'; 
-  // Habilitar acceso al menú de cuenta
   document.getElementById('menu-account-item').style.display = 'block';
   closeAuthModal();
 }
@@ -363,7 +380,6 @@ function handleLogout(e) {
   isUserLoggedIn = false;
   document.getElementById('header-auth-btn').style.display = 'flex';
   document.getElementById('logout-container').style.display = 'none';
-  // Ocultar acceso al menú de cuenta
   document.getElementById('menu-account-item').style.display = 'none';
   showToast('SESIÓN FINALIZADA');
   showPage('home');
