@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeoGames — Ecosistema Retro</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #07070f; --surface: #0f0f1e; --card: #141428; --border: #1e1e3f;
+  --border2: #2a2a5a; --accent: #ffe600; --accent2: #00ffee;
+  --accent3: #ff3cac; --accent4: #a259ff; --muted: #44447a;
+  --text: #c8c8f0; --white: #f0f0ff; --pixel: "Press Start 2P", monospace;
+  --mono: "Share Tech Mono", monospace;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; line-height: 1.7; overflow-x: hidden; }
+body::after { content: ''; position: fixed; inset: 0; z-index: 9998; pointer-events: none; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px); }
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--accent4); }
+
+@keyframes glitch { 0%,100%{clip-path:inset(0 0 98% 0);transform:translate(-2px,0);} 20%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0);} 40%{clip-path:inset(60% 0 20% 0);transform:translate(-1px,0);} 60%{clip-path:inset(80% 0 5% 0);transform:translate(3px,0);} 80%{clip-path:inset(10% 0 80% 0);transform:translate(-3px,0);} }
+@keyframes glitch2 { 0%,100%{clip-path:inset(0 0 98% 0);transform:translate(2px,0);} 20%{clip-path:inset(50% 0 30% 0);transform:translate(-2px,0);} 40%{clip-path:inset(20% 0 60% 0);transform:translate(1px,0);} 60%{clip-path:inset(5% 0 80% 0);transform:translate(-3px,0);} 80%{clip-path:inset(80% 0 10% 0);transform:translate(3px,0);} }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes neon-pulse { 0%,100%{text-shadow:0 0 4px currentColor,0 0 10px currentColor;} 50%{text-shadow:0 0 8px currentColor,0 0 20px currentColor,0 0 40px currentColor;} }
+
+header { position: sticky; top: 0; z-index: 200; background: rgba(7,7,15,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+.header-left { display: flex; align-items: center; gap: 1.5rem; }
+.menu-toggle { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 16px; cursor: pointer; z-index: 1001; }
+.menu-toggle .bar { height: 2px; width: 100%; background: var(--accent); border-radius: 2px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.menu-toggle.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--accent3); }
+.menu-toggle.active .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.menu-toggle.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--accent3); }
+.logo { font-family: var(--pixel); font-size: 14px; color: var(--accent); letter-spacing: 2px; text-decoration: none; position: relative; text-shadow: 0 0 8px rgba(255,230,0,0.6), 0 0 20px rgba(255,230,0,0.3); animation: neon-pulse 3s ease-in-out infinite; }
+.logo::before, .logo::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.logo::before { color: var(--accent3); animation: glitch 4s infinite; left: 2px; }
+.logo::after { color: var(--accent2); animation: glitch2 4s infinite; left: -2px; }
+.logo b { color: var(--accent2); }
+.nav-actions { display: flex; gap: 8px; align-items: center; }
+.btn-nav { background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 6px 14px; font-family: var(--pixel); font-size: 8px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; position: relative; overflow: hidden; }
+.btn-nav:hover { color: var(--bg); border-color: var(--accent); background: var(--accent); }
+.sidebar { position: fixed; top: 60px; left: -320px; width: 320px; height: calc(100vh - 60px); background: rgba(10,10,20,0.98); backdrop-filter: blur(15px); border-right: 1px solid var(--border); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 195; padding: 2rem 0; overflow-y: auto; box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
+.sidebar.active { transform: translateX(320px); }
+.nav-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.nav-link { display: block; padding: 1.2rem 2rem; color: var(--white); text-decoration: none; font-family: var(--pixel); font-size: 10px; border-left: 3px solid transparent; transition: all 0.2s ease; cursor: pointer; }
+.nav-link:hover { background: rgba(255,230,0,0.05); border-left-color: var(--accent); color: var(--accent); padding-left: 2.5rem; }
+.platform-nav-wrap { position: sticky; top: 60px; z-index: 190; background: rgba(7,7,15,0.97); border-bottom: 1px solid var(--border); overflow: hidden; display: none; }
+.platform-nav { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; }
+.platform-nav::-webkit-scrollbar { display: none; }
+.platform-tab { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 22px; border: none; border-right: 1px solid var(--border); cursor: pointer; position: relative; transition: background 0.2s; background: transparent; min-width: 110px; }
+.platform-tab::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.25s; }
+.platform-tab:hover, .platform-tab.active { background: rgba(255,230,0,0.05); }
+.platform-tab:hover::after, .platform-tab.active::after { transform: scaleX(1); }
+.platform-tab.active .ptab-name { color: var(--accent); }
+.ptab-icon { font-size: 24px; line-height: 1; transition: transform 0.2s; }
+.platform-tab:hover .ptab-icon { transform: scale(1.2); }
+.ptab-name { font-family: var(--pixel); font-size: 8px; color: var(--text); }
+.platform-nav-arrow { position: absolute; top: 0; bottom: 0; width: 40px; display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg,rgba(7,7,15,.95),transparent); cursor: pointer; z-index: 2; border: none; color: var(--accent); font-size: 18px; }
+.platform-nav-arrow.right { right: 0; background: linear-gradient(270deg,rgba(7,7,15,.95),transparent); }
+.page { display: none; animation: fadeIn 0.4s ease; }
+.page.active { display: block; }
+.main-home { max-width: 900px; margin: 4rem auto; padding: 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; }
+.home-logo-wrap { margin-bottom: 2rem; animation: fadeInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.home-logo-wrap .logo { font-size: clamp(32px, 6vw, 64px); }
+.slogan { font-family: var(--pixel); font-size: clamp(10px, 2vw, 16px); color: var(--accent2); line-height: 2; margin-bottom: 3rem; text-transform: uppercase; animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.description-box { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 3rem; text-align: left; font-size: 15px; color: var(--text); line-height: 2; box-shadow: 0 15px 30px rgba(0,0,0,0.5); animation: fadeInUp 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden; }
+.section { max-width: 1200px; margin: 0 auto; padding: 3.5rem 2rem; }
+.section-hd { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.section-ttl { font-family: var(--pixel); font-size: 12px; color: var(--white); letter-spacing: 1px; }
+.section-ttl::before { content: '// '; color: var(--accent); }
+.search-wrap { display: flex; gap: 0; border: 1px solid var(--border2); margin-bottom: 2rem; }
+.search-input { flex: 1; background: var(--surface); border: none; padding: 12px 18px; color: var(--white); font-family: var(--mono); font-size: 13px; outline: none; }
+.search-btn { background: var(--accent); border: none; color: var(--bg); padding: 12px 20px; font-family: var(--pixel); font-size: 10px; cursor: pointer; transition: opacity 0.2s;}
+.search-btn:hover { opacity: 0.8; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.card, .console-card { background: var(--card); padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; cursor: pointer; position: relative; overflow: hidden; transition: background 0.2s, transform 0.2s; }
+.card:hover, .console-card:hover { background: var(--surface); transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2; border: 1px solid var(--accent2); }
+.card-img-wrap, .console-card-img { aspect-ratio: 1; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+.console-card-img { aspect-ratio: 4/3; }
+.card-img svg, .console-card-img svg { width: 80%; height: 80%; transition: transform 0.3s; }
+.card:hover .card-img svg, .console-card:hover .console-card-img svg { transform: scale(1.08); filter: drop-shadow(0 0 10px rgba(0,255,238,0.4)); }
+.card-name, .console-card-name { font-family: var(--pixel); font-size: 9px; color: var(--white); line-height: 1.9; }
+.card-price, .console-card-price { font-family: var(--pixel); font-size: 13px; color: var(--accent); }
+.add-btn { background: transparent; border: 1px solid var(--border2); color: var(--text); width: 34px; height: 34px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.add-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.auth-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+.auth-modal-overlay.open { display: flex; opacity: 1; pointer-events: all; }
+.auth-card { background: var(--card); border: 2px solid var(--accent); padding: 2.5rem; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 1rem; position: relative; box-shadow: 0 0 30px rgba(255,230,0,0.15); animation: fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.auth-close { position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--muted); font-size: 24px; cursor: pointer; font-family: var(--mono); }
+.auth-title { font-family: var(--pixel); font-size: 12px; color: var(--white); text-align: center; margin-bottom: 1rem; }
+.auth-input { background: var(--bg); border: 1px solid var(--border2); color: var(--white); padding: 12px; font-family: var(--mono); font-size: 13px; outline: none; }
+.auth-input:focus { border-color: var(--accent); }
+.auth-btn { background: var(--accent); color: var(--bg); border: none; padding: 14px; font-family: var(--pixel); font-size: 10px; cursor: pointer; margin-top: 10px; }
+.auth-switch { text-align: center; font-size: 10px; color: var(--accent2); cursor: pointer; margin-top: 10px; }
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;top:0;right:0;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:501;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--card);border:1px solid var(--accent);color:var(--accent);font-family:var(--pixel);font-size:8px;padding:10px 22px;z-index:600;transition:transform .25s cubic-bezier(.4,0,.2,1);white-space:nowrap;letter-spacing:1px;box-shadow:0 0 20px rgba(255,230,0,.3);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="menu-toggle" id="mobile-menu" onclick="toggleSidebar()">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </div>
+    <a href="#" class="logo" data-text="NEOGAMES" onclick="showPage('home',event)">NEO<b>GAMES</b></a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-nav" id="header-auth-btn" onclick="showAuthModal()"><span>🔑 ACCEDER</span></button>
+    <button class="btn-nav" onclick="toggleCart(event)"><span>🎮 CARRITO <span class="cart-badge" id="cart-count">0</span></span></button>
+  </div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <ul class="nav-list">
+    <li><a class="nav-link" onclick="showPage('consoles', event)">Consolas</a></li>
+    <li><a class="nav-link" onclick="showPage('games', event)">Juegos</a></li>
+    <li><a class="nav-link" onclick="showPage('publish', event)">Publicar Producto</a></li>
+    <li id="menu-account-item" style="display: none;"><a class="nav-link" onclick="showPage('account', event)">Cuenta</a></li>
+    <li><a class="nav-link" onclick="showPage('support', event)">Soporte</a></li>
+    <li id="logout-container" style="display: none; margin-top: 20px; border-top: 1px solid var(--border);">
+      <a class="nav-link" style="color: var(--accent3);" onclick="handleLogout(event)">Cerrar Sesión ✕</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="platform-nav-wrap" id="platform-nav-wrap">
+  <button class="platform-nav-arrow" onclick="scrollPlatNav(-200)">‹</button>
+  <div class="platform-nav" id="platform-nav">
+    <button class="platform-tab active" data-plat="todos" onclick="selectPlatform(this,'todos')"><span class="ptab-icon">🕹️</span><span class="ptab-name">TODOS</span></button>
+    <button class="platform-tab" data-plat="nes" onclick="selectPlatform(this,'nes')"><span class="ptab-icon">🔲</span><span class="ptab-name">NES</span></button>
+    <button class="platform-tab" data-plat="snes" onclick="selectPlatform(this,'snes')"><span class="ptab-icon">🎮</span><span class="ptab-name">SNES</span></button>
+    <button class="platform-tab" data-plat="genesis" onclick="selectPlatform(this,'genesis')"><span class="ptab-icon">⚡</span><span class="ptab-name">GENESIS</span></button>
+    <button class="platform-tab" data-plat="gameboy" onclick="selectPlatform(this,'gameboy')"><span class="ptab-icon">📱</span><span class="ptab-name">GAME BOY</span></button>
+    <button class="platform-tab" data-plat="ps1" onclick="selectPlatform(this,'ps1')"><span class="ptab-icon">▶</span><span class="ptab-name">PS1</span></button>
+  </div>
+  <button class="platform-nav-arrow right" onclick="scrollPlatNav(200)">›</button>
+</div>
+
+<div class="page active" id="page-home">
+  <main class="main-home">
+    <div class="home-logo-wrap">
+      <a href="#" class="logo" data-text="NEOGAMES" style="cursor: default;">NEO<b>GAMES</b></a>
+    </div>
+    <h2 class="slogan">Evolucionando tu ecosistema<br>de entretenimiento.</h2>
+    <div class="description-box">
+      Bienvenido a <strong>NeoGames</strong>. Para acceder a tu nodo logístico y gestión de perfil, es obligatorio iniciar sesión en el sistema.
+    </div>
+  </main>
+</div>
+
+<div class="page" id="page-games">
+  <div class="section">
+    <div class="section-hd"><h2 class="section-ttl" id="games-title">Catálogo de Juegos</h2></div>
+    <div class="search-wrap"><input class="search-input" id="search-input" type="text" placeholder="Buscar algoritmo o título..." oninput="onSearch()"/><button class="search-btn" onclick="onSearch()">BUSCAR</button></div>
+    <p style="font-size:10px;color:var(--muted);margin-bottom:1rem;letter-spacing:1px;" id="results-count"></p>
+    <div class="grid" id="games-grid"></div>
+  </div>
+</div>
+
+<div class="page" id="page-consoles">
+  <div class="section">
+    <div class="section-hd"><h2 class="section-ttl">Catálogo de Consolas</h2></div>
+    <div class="search-wrap"><input class="search-input" id="console-search" type="text" placeholder="Buscar hardware..." oninput="onConsoleSearch()"/><button class="search-btn" onclick="onConsoleSearch()">BUSCAR</button></div>
+    <div class="grid" id="consoles-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));"></div>
+  </div>
+</div>
+
+<div class="page" id="page-publish">
+  <div class="section">
+    <div class="section-hd"><h2 class="section-ttl">Módulo de Publicación</h2></div>
+    <div class="description-box" style="margin-bottom: 2rem; padding: 2rem;">
+      <strong style="color: var(--accent); font-family: var(--pixel); font-size: 8px;">EN DESARROLLO:</strong> La API de inyección de productos se encuentra temporalmente deshabilitada.
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-account">
+  <div class="section">
+    <div class="section-hd"><h2 class="section-ttl">Gestión de Perfil y Nodo Logístico</h2></div>
+    <div class="description-box" style="padding: 2rem; margin-bottom: 2rem; background: var(--card);">
+      <h3 style="font-family: var(--pixel); font-size: 10px; color: var(--accent2); margin-bottom: 1.5rem;">DATOS PERSONALES</h3>
+      <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div class="form-group"><label class="form-label">Alias</label><input type="text" class="form-control" style="width:100%;padding:12px;background:var(--bg);"></div>
+        <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-control" style="width:100%;padding:12px;background:var(--bg);"></div>
+      </div>
+      <button class="btn-submit" onclick="showToast('✓ DATOS ACTUALIZADOS')" style="margin-top:20px;padding:15px;background:var(--accent4);border:none;color:white;cursor:pointer;">GUARDAR</button>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-support">
+  <div class="section">
+    <div class="section-hd"><h2 class="section-ttl">Centro de Soporte Técnico</h2></div>
+    <div class="description-box" style="padding: 2rem; background: var(--card);">
+      <p style="color: var(--muted); font-size: 13px; margin-bottom: 1rem;">Centro de tickets abierto.</p>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleCart(event)"></div>
+<div class="drawer" id="drawer">
+  <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+    <span style="font-family:var(--pixel);font-size:10px;color:var(--white);">// CARRITO</span>
+    <button onclick="toggleCart(event)" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;">×</button>
+  </div>
+  <div id="drawer-items" style="flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px;"></div>
+  <div style="padding:1.25rem 1.5rem;border-top:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
+      <span style="font-size:11px;color:var(--muted);letter-spacing:2px;">TOTAL</span>
+      <span id="drawer-total" style="font-family:var(--pixel);font-size:16px;color:var(--accent);">$0</span>
+    </div>
+    <button onclick="checkout()" style="width:100%;background:linear-gradient(90deg,var(--accent4),var(--accent3));border:none;color:var(--white);padding:14px;font-family:var(--pixel);font-size:9px;cursor:pointer;">FINALIZAR</button>
+  </div>
+</div>
+
+<div class="auth-modal-overlay" id="auth-modal">
+  <div class="auth-card">
+    <button class="auth-close" onclick="closeAuthModal()">×</button>
+    <h3 class="auth-title" id="auth-title">INICIAR SESIÓN</h3>
+    <input type="email" class="auth-input" id="auth-email" placeholder="Correo electrónico">
+    <input type="password" class="auth-input" id="auth-password" placeholder="Contraseña">
+    <button class="auth-btn" onclick="handleAuth()">CONFIRMAR</button>
+    <div class="auth-switch" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const GAMES = [
+  {id:1,name:'Super Mario Bros. 3',platform:'NES',tag:'nes',year:1988,price:12999},
+  {id:2,name:'Sonic the Hedgehog 2',platform:'Sega Genesis',tag:'genesis',year:1992,price:9999},
+  {id:3,name:'Super Metroid',platform:'SNES',tag:'snes',year:1994,price:18999},
+  {id:4,name:'Pokémon Red',platform:'Game Boy',tag:'gameboy',year:1996,price:14999},
+  {id:5,name:'Crash Bandicoot',platform:'PS1',tag:'ps1',year:1996,price:15999}
+];
+const CONSOLES = [
+  {id:1,name:'Nintendo NES',brand:'Nintendo',year:1983,price:45999,tag:'nes'},
+  {id:2,name:'Super Nintendo',brand:'Nintendo',year:1990,price:69999,tag:'snes'}
+];
+
+function gameCartSVG(tag){ return `<svg viewBox="0 0 80 80"><rect x="8" y="15" width="64" height="50" rx="3" fill="#13131a" stroke="#ffe600" stroke-width="1.5"/></svg>`; }
+function consoleSVG(tag){ return `<svg viewBox="0 0 180 130" fill="none"><rect x="10" y="30" width="160" height="80" rx="6" fill="#1a1a2e" stroke="#ffe600" stroke-width="1.5"/></svg>`; }
+
+let activePlatform = 'todos';
+let isUserLoggedIn = false;
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('mobile-menu').classList.toggle('active'); }
+
+function showPage(name, e) {
+  if (e) e.preventDefault();
+  
+  // Guard lógico para restringir acceso a Cuenta
+  if (name === 'account' && !isUserLoggedIn) {
+      showToast('× SESIÓN REQUERIDA');
+      showAuthModal();
+      return;
+  }
+  
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  
+  if (document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+
+  const platformNav = document.getElementById('platform-nav-wrap');
+  platformNav.style.display = (name === 'games' || name === 'consoles') ? 'block' : 'none';
+
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(name === 'games') renderGamesGrid();
+  if(name === 'consoles') renderConsoleGrid();
+}
+
+function selectPlatform(el, plat) {
+  document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  activePlatform = plat;
+  const activePage = document.querySelector('.page.active').id;
+  if (activePage === 'page-consoles') renderConsoleGrid();
+  else if (activePage === 'page-games') renderGamesGrid();
+  else showPage('games', null);
+}
+
+function scrollPlatNav(dx){ document.getElementById('platform-nav').scrollBy({left:dx,behavior:'smooth'}); }
+
+function renderGamesGrid() {
+  const filteredGames = GAMES.filter(g => activePlatform === 'todos' || g.tag === activePlatform);
+  const grid = document.getElementById('games-grid');
+  grid.innerHTML = filteredGames.map(g => `
+    <div class="card">
+      <div class="card-img-wrap">${gameCartSVG(g.tag)}</div>
+      <div class="card-name">${g.name}</div>
+      <div class="card-price">$${g.price}</div>
+      <button class="add-btn" onclick="addToCart('${g.name}', ${g.price})">+</button>
+    </div>
+  `).join('');
+}
+
+function renderConsoleGrid() {
+  const filteredConsoles = CONSOLES.filter(c => activePlatform === 'todos' || c.tag === activePlatform);
+  const grid = document.getElementById('consoles-grid');
+  grid.innerHTML = filteredConsoles.map(c => `
+    <div class="console-card">
+      <div class="console-card-img">${consoleSVG(c.tag)}</div>
+      <div class="console-card-name">${c.name}</div>
+      <div class="console-card-price">$${c.price}</div>
+      <button class="add-btn" onclick="addToCart('${c.name}', ${c.price})">+</button>
+    </div>
+  `).join('');
+}
+
+function onSearch() { renderGamesGrid(); }
+function onConsoleSearch() { renderConsoleGrid(); }
+
+let cart = [];
+function addToCart(name, price) { cart.push({name, price}); updateCart(); showToast('+ ' + name.toUpperCase()); }
+function updateCart() {
+  document.getElementById('cart-count').textContent = cart.length;
+  const itemsEl = document.getElementById('drawer-items');
+  itemsEl.innerHTML = cart.map(item => `<div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:10px;"><span style="color:white;font-size:12px;">${item.name}</span><span style="color:var(--accent);">$${item.price}</span></div>`).join('');
+  document.getElementById('drawer-total').textContent = '$' + cart.reduce((s,i)=>s+i.price,0);
+}
+function toggleCart(e) { if(e) e.preventDefault(); document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+function checkout() { showToast('✓ COMPRA FINALIZADA'); cart=[]; updateCart(); toggleCart(); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function showAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; setTimeout(() => document.getElementById('auth-modal').classList.add('open'), 10); }
+function closeAuthModal() { document.getElementById('auth-modal').classList.remove('open'); setTimeout(() => document.getElementById('auth-modal').style.display = 'none', 300); }
+let isLoginMode = true;
+function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('auth-title').textContent = isLoginMode ? "INICIAR SESIÓN" : "REGISTRO"; }
+
+function loginSuccess() {
+  isUserLoggedIn = true;
+  document.getElementById('header-auth-btn').style.display = 'none'; 
+  document.getElementById('logout-container').style.display = 'block'; 
+  // Habilitar acceso al menú de cuenta
+  document.getElementById('menu-account-item').style.display = 'block';
+  closeAuthModal();
+}
+
+function handleAuth() {
+  const email = document.getElementById('auth-email').value;
+  const pass = document.getElementById('auth-password').value;
+  if (!email || !pass) return showToast('× COMPLETA LOS CAMPOS');
+  if (isLoginMode) {
+    if (localStorage.getItem(email) === pass) { showToast('✓ ACCESO CONCEDIDO'); loginSuccess(); } 
+    else { showToast('× CREDENCIALES INVÁLIDAS'); }
+  } else { localStorage.setItem(email, pass); showToast('✓ REGISTRADO'); toggleAuthMode(); }
+}
+
+function handleLogout(e) {
+  if (e) e.preventDefault();
+  isUserLoggedIn = false;
+  document.getElementById('header-auth-btn').style.display = 'flex';
+  document.getElementById('logout-container').style.display = 'none';
+  // Ocultar acceso al menú de cuenta
+  document.getElementById('menu-account-item').style.display = 'none';
+  showToast('SESIÓN FINALIZADA');
+  showPage('home');
+}
+
+window.onload = function() {
+  updateCart();
+  setTimeout(showAuthModal, 500);
+};
+</script>
+</body>
+</html>
